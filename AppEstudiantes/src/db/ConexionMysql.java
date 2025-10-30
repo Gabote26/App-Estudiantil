@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public class ConexionMysql {
 
-	// ✅ Puerto corregido a 3306 (el puerto por defecto de MySQL)
 	private static final String URL = "jdbc:mysql://localhost:3306/students_data_mysql" + "?useSSL=false"
 			+ "&allowPublicKeyRetrieval=true" + "&serverTimezone=UTC";
 	private static final String USER = "root";
@@ -15,10 +14,10 @@ public class ConexionMysql {
 	public Connection conectar() {
 		Connection cn = null;
 		try {
-			// ✅ Cargar el driver de MySQL
+			// Cargar driver de MySQL
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			// ✅ Intentar la conexión
+			// Se intenta establecer la conexión
 			cn = DriverManager.getConnection(URL, USER, PASSWORD);
 			System.out.println("✅ Conectado correctamente a la base de datos");
 		} catch (ClassNotFoundException e) {

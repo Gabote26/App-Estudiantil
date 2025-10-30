@@ -30,7 +30,6 @@ public class LoginSystem extends JFrame {
 
 	public LoginSystem() {
 		setTitle("Sistema de Inicio de Sesión");
-		// ✅ Corregido: usar SOLO EXIT_ON_CLOSE
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 478, 432);
 		setLocationRelativeTo(null);
@@ -90,7 +89,7 @@ public class LoginSystem extends JFrame {
 		passwordInput.setBackground(new Color(218, 242, 245));
 		passwordInput.setForeground(Color.GRAY);
 		passwordInput.setBounds(125, 173, 198, 23);
-		passwordInput.setEchoChar((char) 0); // sin ocultar texto inicialmente
+		passwordInput.setEchoChar((char) 0);
 		container.add(passwordInput);
 
 		char defaultEchoChar = new JPasswordField().getEchoChar();
@@ -147,14 +146,14 @@ public class LoginSystem extends JFrame {
 		String user = userInput.getText();
 		String password = new String(passwordInput.getPassword());
 
-		// ✅ Validar campos vacíos o placeholders
+		// Validacion de campos vacíos o placeholders para evitar inconsistencias
 		if (user.equals(placeholderUser) || password.equals(placeholderPassword) || user.isBlank()
 				|| password.isBlank()) {
 			JOptionPane.showMessageDialog(this, "¡DEBE COMPLETAR TODOS LOS CAMPOS!");
 			return;
 		}
 
-		// ✅ Validar conexión
+		// Validar conexión con la base de datos
 		Connection cn = connectionDB.conectar();
 		if (cn == null) {
 			JOptionPane.showMessageDialog(this, "No se pudo establecer conexión con la base de datos.",
@@ -162,7 +161,7 @@ public class LoginSystem extends JFrame {
 			return;
 		}
 
-		// ✅ Consulta SQL (asegúrate de que las columnas coincidan con tu BD)
+		//  Consulta de SQL en la base de datos
 		String query = "SELECT role FROM usuarios WHERE email = ? AND password = ?";
 
 		try (PreparedStatement ps = cn.prepareStatement(query)) {
@@ -172,11 +171,10 @@ public class LoginSystem extends JFrame {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					String assignedRole = rs.getString("role");
-
-					// ✅ Cerrar esta ventana
+					
 					dispose();
 
-					// ✅ Abrir ventana correspondiente
+					// Abrir ventana correspondiente dependiendo del rol del usuario
 					if ("PROFESOR".equalsIgnoreCase(assignedRole)) {
 						new MainForTeachers().setVisible(true);
 					} else if ("ESTUDIANTE".equalsIgnoreCase(assignedRole)) {
