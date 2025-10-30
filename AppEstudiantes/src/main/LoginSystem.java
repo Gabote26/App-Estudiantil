@@ -1,13 +1,12 @@
 package main;
 
-import utils.*;
-
+import db.ConexionMysql;
+import utils.RoundedButton;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.sql.*;
 
 public class LoginSystem extends JFrame {
 
@@ -15,138 +14,190 @@ public class LoginSystem extends JFrame {
 	private JPanel container;
 	private JTextField userInput;
 	private JPasswordField passwordInput;
+	private final ConexionMysql connectionDB = new ConexionMysql();
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginSystem frame = new LoginSystem();
-					frame.setVisible(true);
-					frame.setResizable(false);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		SwingUtilities.invokeLater(() -> {
+			try {
+				LoginSystem frame = new LoginSystem();
+				frame.setVisible(true);
+				frame.setResizable(false);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public LoginSystem() {
+		setTitle("Sistema de Inicio de Sesión");
+		// ✅ Corregido: usar SOLO EXIT_ON_CLOSE
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 478, 432);
+		setLocationRelativeTo(null);
+
 		container = new JPanel();
-		container.setForeground(new Color(255, 255, 255));
+		container.setForeground(Color.WHITE);
 		container.setBackground(new Color(42, 34, 71));
 		container.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(container);
 		container.setLayout(null);
-		
-		
-		// Elementos de la interfáz.
+		setContentPane(container);
+
+		// Etiquetas
 		JLabel titleLogin = new JLabel("INICIAR SESIÓN");
 		titleLogin.setBounds(138, 59, 174, 23);
-		titleLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
 		titleLogin.setFont(new Font("Roboto", Font.BOLD, 23));
-		titleLogin.setForeground(new Color(255, 255, 255));
+		titleLogin.setForeground(Color.WHITE);
 		container.add(titleLogin);
-		
+
 		JLabel loginInformation = new JLabel("Ingresa tu usuario y contraseña para entrar al sistema");
 		loginInformation.setFont(new Font("MS Gothic", Font.ITALIC, 12));
-		loginInformation.setForeground(new Color(255, 255, 255));
+		loginInformation.setForeground(Color.WHITE);
 		loginInformation.setBounds(52, 92, 360, 23);
 		container.add(loginInformation);
-		
-		// Inputs de datos recibidos
+
+		// Placeholders
 		String placeholderUser = "Usuario (No. de Control)";
 		String placeholderPassword = "Contraseña";
-		
-		userInput = new JTextField();
+
+		// Campo usuario
+		userInput = new JTextField(placeholderUser);
 		userInput.setBackground(new Color(218, 242, 245));
 		userInput.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 10));
-		userInput.setText(placeholderUser);
+		userInput.setForeground(Color.GRAY);
 		userInput.setBounds(125, 140, 198, 23);
 		container.add(userInput);
-		userInput.setColumns(10);
+
 		userInput.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Si el texto es el placeholder, lo borra
-                if (userInput.getText().equals(placeholderUser)) {
-                	userInput.setText("");
-                	userInput.setForeground(Color.BLACK);
-                }
-            }
+			@Override
+			public void focusGained(FocusEvent e) {
+				if (userInput.getText().equals(placeholderUser)) {
+					userInput.setText("");
+					userInput.setForeground(Color.BLACK);
+				}
+			}
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Si está vacío al perder foco, se restaura el placeholder
-                if (userInput.getText().isEmpty()) {
-                	userInput.setText(placeholderUser);
-                	userInput.setForeground(Color.GRAY);
-                }
-            }
-        });
-		
-		passwordInput = new JPasswordField(20);
-		char echoChar = passwordInput.getEchoChar();
-		passwordInput.setBackground(new Color(218, 242, 245));
-		passwordInput.setBounds(125, 173, 198, 23);
-		passwordInput.setText(placeholderPassword);
-		passwordInput.setEchoChar((char) 0);
-		container.add(passwordInput);
-		passwordInput.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Si tiene el placeholder, limpiar y volver a activar el echo char
-                String currentText = new String(passwordInput.getPassword());
-                if (currentText.equals(placeholderPassword)) {
-                	passwordInput.setText("");
-                	passwordInput.setForeground(Color.BLACK);
-                	passwordInput.setEchoChar(echoChar); // activa ocultamiento
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Si está vacío al perder foco, restaurar placeholder
-                String currentText = new String(passwordInput.getPassword());
-                if (currentText.isEmpty()) {
-                	passwordInput.setText(placeholderPassword);
-                	passwordInput.setForeground(Color.GRAY);
-                	passwordInput.setEchoChar((char) 0); // muestra texto plano
-                }
-            }
-        });
-		
-		// Botones de utilidades
-		JButton loginBtn = new RoundedButton("Iniciar Sesión", 20);
-		loginBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Login Default Message");
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (userInput.getText().isEmpty()) {
+					userInput.setText(placeholderUser);
+					userInput.setForeground(Color.GRAY);
+				}
 			}
 		});
-		loginBtn.setForeground(new Color(255, 255, 255));
+
+		// Campo contraseña
+		passwordInput = new JPasswordField(placeholderPassword, 20);
+		passwordInput.setBackground(new Color(218, 242, 245));
+		passwordInput.setForeground(Color.GRAY);
+		passwordInput.setBounds(125, 173, 198, 23);
+		passwordInput.setEchoChar((char) 0); // sin ocultar texto inicialmente
+		container.add(passwordInput);
+
+		char defaultEchoChar = new JPasswordField().getEchoChar();
+
+		passwordInput.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				String currentText = new String(passwordInput.getPassword());
+				if (currentText.equals(placeholderPassword)) {
+					passwordInput.setText("");
+					passwordInput.setForeground(Color.BLACK);
+					passwordInput.setEchoChar(defaultEchoChar);
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				String currentText = new String(passwordInput.getPassword());
+				if (currentText.isEmpty()) {
+					passwordInput.setText(placeholderPassword);
+					passwordInput.setForeground(Color.GRAY);
+					passwordInput.setEchoChar((char) 0);
+				}
+			}
+		});
+
+		// Botón de inicio de sesión
+		JButton loginBtn = new RoundedButton("Iniciar Sesión", 20);
+		loginBtn.setForeground(Color.WHITE);
 		loginBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		loginBtn.setBackground(new Color(173, 19, 74));
 		loginBtn.setBounds(169, 228, 115, 33);
 		container.add(loginBtn);
-		
+
+		loginBtn.addActionListener(e -> iniciarSesion(placeholderUser, placeholderPassword));
+
+		// Botón de recuperación
 		RoundedButton changePasswordBtn = new RoundedButton("Recuperar Contraseña", 20);
-		changePasswordBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Para resetear la contraseña, contacte al administrador", "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		});
 		changePasswordBtn.setForeground(Color.WHITE);
 		changePasswordBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		changePasswordBtn.setBackground(new Color(40, 153, 140));
 		changePasswordBtn.setBounds(149, 271, 153, 28);
 		container.add(changePasswordBtn);
 
+		changePasswordBtn.addActionListener(
+				e -> JOptionPane.showMessageDialog(this, "Para resetear la contraseña, contacte al administrador",
+						"Información", JOptionPane.INFORMATION_MESSAGE));
+	}
+
+	/**
+	 * Método que maneja el proceso de inicio de sesión.
+	 */
+	private void iniciarSesion(String placeholderUser, String placeholderPassword) {
+		String user = userInput.getText();
+		String password = new String(passwordInput.getPassword());
+
+		// ✅ Validar campos vacíos o placeholders
+		if (user.equals(placeholderUser) || password.equals(placeholderPassword) || user.isBlank()
+				|| password.isBlank()) {
+			JOptionPane.showMessageDialog(this, "¡DEBE COMPLETAR TODOS LOS CAMPOS!");
+			return;
+		}
+
+		// ✅ Validar conexión
+		Connection cn = connectionDB.conectar();
+		if (cn == null) {
+			JOptionPane.showMessageDialog(this, "No se pudo establecer conexión con la base de datos.",
+					"Error de conexión", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// ✅ Consulta SQL (asegúrate de que las columnas coincidan con tu BD)
+		String query = "SELECT role FROM usuarios WHERE email = ? AND password = ?";
+
+		try (PreparedStatement ps = cn.prepareStatement(query)) {
+			ps.setString(1, user);
+			ps.setString(2, password);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					String assignedRole = rs.getString("role");
+
+					// ✅ Cerrar esta ventana
+					dispose();
+
+					// ✅ Abrir ventana correspondiente
+					if ("PROFESOR".equalsIgnoreCase(assignedRole)) {
+						new MainForTeachers().setVisible(true);
+					} else if ("ESTUDIANTE".equalsIgnoreCase(assignedRole)) {
+						new ProgramMain().setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(this, "Rol desconocido: " + assignedRole, "Advertencia",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(this, "¡USUARIO O CONTRASEÑA INCORRECTOS!");
+				}
+			}
+
+		} catch (SQLException err) {
+			JOptionPane.showMessageDialog(this, "ERROR AL INICIAR SESIÓN:\n" + err.getMessage(), "Error SQL",
+					JOptionPane.ERROR_MESSAGE);
+		} finally {
+			try {
+				cn.close();
+			} catch (SQLException ignore) {
+			}
+		}
 	}
 }

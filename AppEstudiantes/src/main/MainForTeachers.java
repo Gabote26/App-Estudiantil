@@ -1,14 +1,14 @@
 package main;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 import java.awt.Font;
 
-public class ProgramMain extends JFrame {
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+public class MainForTeachers extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -20,7 +20,7 @@ public class ProgramMain extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ProgramMain frame = new ProgramMain();
+					MainForTeachers frame = new MainForTeachers();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,8 +32,8 @@ public class ProgramMain extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ProgramMain() {
-		setTitle("Gestion de Estudiante ${user}");
+	public MainForTeachers() {
+		setTitle("Gestion de Profesor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 795, 595);
 		setLocationRelativeTo(null);
@@ -42,9 +42,9 @@ public class ProgramMain extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel title = new JLabel("ESTUDIANTES");
+		JLabel title = new JLabel("PROFESORES");
 		title.setFont(new Font("Tahoma", Font.BOLD, 53));
-		title.setBounds(170, 212, 414, 166);
+		title.setBounds(212, 250, 356, 64);
 		contentPane.add(title);
 
 	}
