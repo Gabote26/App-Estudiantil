@@ -1,6 +1,8 @@
 package main;
 
 import db.ConexionMysql;
+import guiEstudiante.ProgramMain;
+import guiProfesor.MainForTeachers;
 import utils.RoundedButton;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
