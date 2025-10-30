@@ -15,12 +15,13 @@ public class AgregarEstudiante extends JFrame {
     private final ConexionMysql connectionDB = new ConexionMysql();
     private MainForTeachers parentFrame;
     private JTextField txtApellido;
+    private JTextField txtNumControl;
 
     public AgregarEstudiante(MainForTeachers parent) {
         this.parentFrame = parent;
 
         setTitle("Agregar Nuevo Estudiante");
-        setSize(400, 364);
+        setSize(400, 410);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -51,7 +52,7 @@ public class AgregarEstudiante extends JFrame {
         getContentPane().add(lblEmail);
 
         txtEmail = new JTextField();
-        txtEmail.setBounds(150, 220, 180, 25);
+        txtEmail.setBounds(150, 170, 180, 25);
         getContentPane().add(txtEmail);
 
         JLabel lblPassword = new JLabel("Contraseña:");
@@ -59,12 +60,20 @@ public class AgregarEstudiante extends JFrame {
         getContentPane().add(lblPassword);
 
         txtPassword = new JPasswordField();
-        txtPassword.setBounds(150, 170, 180, 25);
+        txtPassword.setBounds(150, 220, 180, 25);
         getContentPane().add(txtPassword);
 
         JButton btnGuardar = new JButton("💾 Guardar Estudiante");
-        btnGuardar.setBounds(110, 270, 180, 30);
+        btnGuardar.setBounds(110, 320, 180, 30);
         getContentPane().add(btnGuardar);
+        
+        JLabel lblNumControl = new JLabel("Num. de Control");
+        lblNumControl.setBounds(50, 270, 100, 20);
+        getContentPane().add(lblNumControl);
+        
+        txtNumControl = new JTextField();
+        txtNumControl.setBounds(150, 270, 180, 25);
+        getContentPane().add(txtNumControl);
         btnGuardar.addActionListener(e -> guardarNuevoEstudiante());
     }
 
@@ -76,21 +85,24 @@ public class AgregarEstudiante extends JFrame {
         String apellido = txtApellido.getText().trim();
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword()).trim();
+        String numControl = txtNumControl.getText().trim();
 
-        if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || password.isEmpty() || numControl.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos.");
             return;
         }
 
-        String query = "INSERT INTO usuarios (nombre, apellido, email, password, role) VALUES (?, ?, ?, ?, 'ESTUDIANTE')";
+        String query = "INSERT INTO usuarios (nombre, apellido, email, password, role, no_control) VALUES (?, ?, ?, ?, 'ESTUDIANTE', ?)";
 
         try (Connection cn = connectionDB.conectar();
              PreparedStatement ps = cn.prepareStatement(query)) {
+        	
 
             ps.setString(1, nombre);
             ps.setString(2, apellido);
             ps.setString(3, email);
             ps.setString(4, password);
+            ps.setString(5, numControl);
 
             int rowsAffected = ps.executeUpdate();
 
