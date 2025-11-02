@@ -6,7 +6,8 @@ import java.sql.SQLException;
 
 public class ConexionMysql {
 
-	private static final String URL = "jdbc:mysql://localhost:3306/students_data_mysql" + "?useSSL=false"
+	// Se reemplza con la url del tunnel
+	private static final String URL = "jdbc:mysql://skirts-joshua-epic-leather.trycloudflare.com:3306/students_data_mysql" + "?useSSL=false"
 			+ "&allowPublicKeyRetrieval=true" + "&serverTimezone=UTC";
 	private static final String USER = "root";
 	private static final String PASSWORD = "";
