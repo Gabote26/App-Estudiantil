@@ -14,7 +14,7 @@ public class RoundedButton extends JButton {
     public RoundedButton(String text, int radius) {
         super(text);
         this.radius = radius;
-        setContentAreaFilled(false); // Evita el fondo rectangular predeterminado
+        setContentAreaFilled(false);
     }
 
     @Override

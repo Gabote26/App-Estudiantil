@@ -86,7 +86,7 @@ public class LoginSystem extends JFrame {
 			}
 		});
 
-		// Campo contraseña
+		// Campo de la contraseña
 		passwordInput = new JPasswordField(placeholderPassword, 20);
 		passwordInput.setBackground(new Color(218, 242, 245));
 		passwordInput.setForeground(Color.GRAY);
@@ -128,7 +128,7 @@ public class LoginSystem extends JFrame {
 
 		loginBtn.addActionListener(e -> iniciarSesion(placeholderUser, placeholderPassword));
 
-		// Botón de recuperación
+		// Botón de recuperación de contraseña
 		RoundedButton changePasswordBtn = new RoundedButton("Recuperar Contraseña", 20);
 		changePasswordBtn.setForeground(Color.WHITE);
 		changePasswordBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -163,7 +163,7 @@ public class LoginSystem extends JFrame {
 			return;
 		}
 
-		//  Consulta de SQL en la base de datos
+		//  Consulta de datos SQL en la base de datos
 		String query = "SELECT role FROM usuarios WHERE email = ? AND password = ?";
 
 		try (PreparedStatement ps = cn.prepareStatement(query)) {

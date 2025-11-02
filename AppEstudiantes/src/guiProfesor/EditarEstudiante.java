@@ -12,6 +12,8 @@ public class EditarEstudiante extends JFrame {
     private JTextField txtNombre;
     private JTextField txtEmail;
     private JPasswordField txtPassword;
+    private JComboBox<String> cbGrupo;
+    private int grupoActualId;
     private final ConexionMysql connectionDB = new ConexionMysql();
 
     private int idEstudiante;
@@ -23,7 +25,8 @@ public class EditarEstudiante extends JFrame {
         this.idEstudiante = id;
 
         setTitle("Editar Estudiante");
-        setSize(400, 364);
+        setSize(400, 404);
+        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -64,23 +67,63 @@ public class EditarEstudiante extends JFrame {
         txtPassword = new JPasswordField();
         txtPassword.setBounds(180, 220, 150, 25);
         getContentPane().add(txtPassword);
+        
+        JLabel lblGrupo = new JLabel("Grupo:");
+        lblGrupo.setBounds(50, 270, 100, 20);
+        getContentPane().add(lblGrupo);
+
+        cbGrupo = new JComboBox<>();
+        cbGrupo.setBounds(150, 270, 180, 25);
+        getContentPane().add(cbGrupo);
+        cargarGrupos();
 
         JButton btnGuardar = new JButton("💾 Guardar Cambios");
-        btnGuardar.setBounds(110, 270, 180, 30);
+        btnGuardar.setBounds(110, 320, 180, 30);
         getContentPane().add(btnGuardar);
-
-        // Acción del botón guardar
         btnGuardar.addActionListener(e -> guardarCambios());
     }
+    
+    private void cargarGrupos() {
+        cbGrupo.removeAllItems();
+        cbGrupo.addItem("");
+        String query = "SELECT id, nombre_grupo FROM grupos";
+
+        try (Connection cn = connectionDB.conectar();
+             PreparedStatement ps = cn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                cbGrupo.addItem(rs.getString("nombre_grupo"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar grupos:\n" + e.getMessage(),
+                    "Error SQL", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private int obtenerIdGrupo(String nombreGrupo) {
+		String query = "SELECT id FROM grupos WHERE nombre_grupo = ?";
+		try (Connection cn = connectionDB.conectar(); PreparedStatement ps = cn.prepareStatement(query)) {
+			ps.setString(1, nombreGrupo);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				return rs.getInt("id");
+		} catch (SQLException e) {
+			System.err.println("Error al obtener id del grupo: " + e.getMessage());
+		}
+		return -1;
+	}
 
     /**
-     * Actualiza los datos del estudiante en la base de datos
+     * Actualizar los datos del estudiante en la base de datos segun los datos ingresados
      */
     private void guardarCambios() {
         String nuevoNombre = txtNombre.getText().trim();
         String nuevoApellido = txtApellido.getText().trim();
         String nuevoEmail = txtEmail.getText().trim();
         String nuevaPassword = new String(txtPassword.getPassword()).trim();
+        String nombreGrupo = (String) cbGrupo.getSelectedItem();
+        int grupoId = obtenerIdGrupo(nombreGrupo);
 
         if (nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevoEmail.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos obligatorios.");
@@ -89,9 +132,9 @@ public class EditarEstudiante extends JFrame {
 
         String query;
         if (!nuevaPassword.isEmpty()) {
-            query = "UPDATE usuarios SET nombre = ?, apellido = ?, email = ?, password = ? WHERE id = ?";
+            query = "UPDATE usuarios SET nombre = ?, apellido = ?, email = ?, password = ?, grupo_id = ? WHERE id = ?";
         } else {
-            query = "UPDATE usuarios SET nombre = ?, apellido = ?, email = ? WHERE id = ?";
+            query = "UPDATE usuarios SET nombre = ?, apellido = ?, email = ?, grupo_id = ? WHERE id = ?";
         }
 
         try (Connection cn = connectionDB.conectar();
@@ -112,7 +155,7 @@ public class EditarEstudiante extends JFrame {
 
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "✅ Datos actualizados correctamente.");
-                parentFrame.cargarEstudiantes(); // refresca la tabla del JFrame principal
+                parentFrame.cargarEstudiantes();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo actualizar el estudiante.");
