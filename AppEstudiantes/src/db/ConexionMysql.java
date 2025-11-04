@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConexionMysql {
     private static final String URL = 
-    		"jdbc:mysql://students-data-mysql-studentsdatamysql.c.aivencloud.com:11529/students_data_mysql"
+    		""
             + "?sslMode=REQUIRED"
             + "&serverTimezone=UTC"
             + "&connectTimeout=8000"
