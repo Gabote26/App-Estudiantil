@@ -20,7 +20,7 @@ public class ConexionMysql {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             cn = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("✅ Conectado correctamente a la base de datos Aiven MySQL");
+            System.out.println("✅ Conectado correctamente a la base de datos");
         } catch (ClassNotFoundException e) {
             System.err.println("❌ No se encontró el driver JDBC: " + e.getMessage());
         } catch (SQLException e) {
