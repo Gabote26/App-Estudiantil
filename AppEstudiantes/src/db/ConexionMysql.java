@@ -6,14 +6,14 @@ import java.sql.SQLException;
 
 public class ConexionMysql {
     private static final String URL = 
-    		""
+    		"jdbc:mysql://students-data-mysql-studentsdatamysql.c.aivencloud.com:11529/students_data_mysql"
             + "?sslMode=REQUIRED"
             + "&serverTimezone=UTC"
             + "&connectTimeout=8000"
             + "&socketTimeout=8000";
 
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_X8ZLHz18HP2o0JB2eGv";
 
     public Connection conectar() {
         Connection cn = null;

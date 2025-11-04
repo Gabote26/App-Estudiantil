@@ -17,7 +17,7 @@ public class GestionarEstudiante extends JFrame {
 	 */
 	public GestionarEstudiante(MainForTeachers parent) {
 		this.parentFrame = parent;
-		setTitle("Agregar Nuevo Estudiante");
+		setTitle("Gestionar Estudiantes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
