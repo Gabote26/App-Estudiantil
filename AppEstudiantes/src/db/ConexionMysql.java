@@ -13,7 +13,7 @@ public class ConexionMysql {
             + "&socketTimeout=8000";
 
     private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_X8ZLHz18HP2o0JB2eGv";
+    private static final String PASSWORD = "";
 
     public Connection conectar() {
         Connection cn = null;
