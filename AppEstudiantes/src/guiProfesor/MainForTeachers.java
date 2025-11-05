@@ -11,14 +11,12 @@ public class MainForTeachers extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	// Definiciones de variables principales.
 	private JComboBox<String> cbGrupos;
 	private int grupoSeleccionadoId = -1;
 	private JTable tableEstudiantes;
 	private DefaultTableModel model;
 	private final ConexionMysql connectionDB = new ConexionMysql();
 
-	// Action panel y botones para gestion
 	private JPanel actionPanel;
 	private JButton btnRefrescar, btnVer, btnAgregar, btnEliminar, btnEditar;
 	private JButton btnSeleccionarEstudiante;
@@ -29,8 +27,6 @@ public class MainForTeachers extends JFrame {
 		setSize(1250, 500);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
-		
-		// A continuacion compañeros, se definen por secciones los elementos que conforman el programa base.
 
 		// ---------------- PANEL SUPERIOR ----------------
 		JPanel headerPanel = new JPanel();
@@ -67,11 +63,10 @@ public class MainForTeachers extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(tableEstudiantes);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-		// Filtrado dinamico
+		// Filtrado dinámico
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
 		tableEstudiantes.setRowSorter(sorter);
 
-		// Filtro de búsqueda en tiempo real
 		txtBuscar.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
 			private void filtrar() {
 				String texto = txtBuscar.getText().trim();
@@ -113,7 +108,7 @@ public class MainForTeachers extends JFrame {
 			}
 		});
 
-		// -------------- PANEL DE GRUPOS Y SELECCIÓN DE ESTUDIANTE --------------
+		// -------------- PANEL DE GRUPOS --------------
 		JPanel grupoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		grupoPanel.setBackground(new Color(240, 240, 240));
 
@@ -125,12 +120,11 @@ public class MainForTeachers extends JFrame {
 		cbGrupos.addItem("Todos los grupos");
 		grupoPanel.add(cbGrupos);
 
-		// Boton para mostrar/ocultar el actionPanel
 		btnSeleccionarEstudiante = new JButton("🎯 Seleccionar Estudiante");
 		btnSeleccionarEstudiante.setBackground(new Color(220, 220, 220));
 		grupoPanel.add(btnSeleccionarEstudiante);
 
-		// ---------------- PANEL DE BOTONES (actionPanel) ----------------
+		// ---------------- PANEL DE BOTONES ----------------
 		actionPanel = new JPanel();
 		actionPanel.setBackground(new Color(245, 245, 245));
 		actionPanel.setVisible(false);
@@ -151,13 +145,11 @@ public class MainForTeachers extends JFrame {
 		actionPanel.add(btnEliminar);
 		actionPanel.add(btnEditar);
 
-		// Contenedor inferior donde se agrupan grupoPanel y actionPanel para gestionarlos de forma sencilla
 		JPanel bottomContainer = new JPanel(new BorderLayout());
 		bottomContainer.add(grupoPanel, BorderLayout.NORTH);
 		bottomContainer.add(actionPanel, BorderLayout.SOUTH);
 		getContentPane().add(bottomContainer, BorderLayout.SOUTH);
 
-		// Evento del botón de selección
 		btnSeleccionarEstudiante.addActionListener(e -> {
 			int selectedRow = tableEstudiantes.getSelectedRow();
 
@@ -166,8 +158,6 @@ public class MainForTeachers extends JFrame {
 					JOptionPane.showMessageDialog(this, "Por favor selecciona un estudiante en la tabla.");
 				} else {
 					actionPanel.setVisible(true);
-					actionPanel.revalidate();
-					actionPanel.repaint();
 					btnVer.setEnabled(true);
 					btnEliminar.setEnabled(true);
 					btnEditar.setEnabled(true);
@@ -184,7 +174,6 @@ public class MainForTeachers extends JFrame {
 			}
 		});
 
-		// Cambiar grupo segun se seleccione en el comboBox
 		cbGrupos.addActionListener(e -> {
 			if (cbGrupos.getSelectedIndex() > 0) {
 				grupoSeleccionadoId = obtenerIdGrupo(cbGrupos.getSelectedItem().toString());
@@ -194,24 +183,12 @@ public class MainForTeachers extends JFrame {
 			cargarEstudiantes();
 		});
 
-		// ---------------- EVENTOS ----------------
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
 		btnVer.addActionListener(e -> verDetallesEstudiante());
 		btnEliminar.addActionListener(e -> eliminarEstudiante());
 		btnEditar.addActionListener(e -> editarEstudiante());
 		btnAgregar.addActionListener(e -> agregarEstudiante());
 
-		// Listener de selección en la tabla para detectar cuando un estudiante es seleccionado
-		tableEstudiantes.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-			if (!e.getValueIsAdjusting() && actionPanel.isVisible()) {
-				boolean haySeleccion = tableEstudiantes.getSelectedRow() != -1;
-				btnVer.setEnabled(haySeleccion);
-				btnEliminar.setEnabled(haySeleccion);
-				btnEditar.setEnabled(haySeleccion);
-			}
-		});
-
-		// ---------------- CARGAR DATOS ----------------
 		cargarGrupos();
 		cargarEstudiantes();
 	}
@@ -250,7 +227,7 @@ public class MainForTeachers extends JFrame {
 	public void cargarEstudiantes() {
 		model.setRowCount(0);
 		String query = "SELECT u.id, u.nombre, u.apellido, u.email, u.role, u.no_control, g.nombre_grupo "
-				+ "FROM usuarios u LEFT JOIN grupos g ON u.grupo_id = g.id " + "WHERE u.role = 'ESTUDIANTE'";
+				+ "FROM usuarios u LEFT JOIN grupos g ON u.grupo_id = g.id WHERE u.role = 'ESTUDIANTE'";
 
 		if (grupoSeleccionadoId != -1) {
 			query += " AND u.grupo_id = " + grupoSeleccionadoId;
@@ -270,13 +247,6 @@ public class MainForTeachers extends JFrame {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(this, "Error al cargar estudiantes:\n" + e.getMessage(), "Error SQL",
 					JOptionPane.ERROR_MESSAGE);
-		} finally {
-			actionPanel.setVisible(false);
-			btnSeleccionarEstudiante.setBackground(new Color(220, 220, 220));
-			btnSeleccionarEstudiante.setText("🎯 Seleccionar Estudiante");
-			btnVer.setEnabled(false);
-			btnEliminar.setEnabled(false);
-			btnEditar.setEnabled(false);
 		}
 	}
 
@@ -296,6 +266,16 @@ public class MainForTeachers extends JFrame {
 				"📋 Detalles del Estudiante:\n\n" + "Nombre: " + nombre + " " + apellido + "\n" + "Email: " + email
 						+ "\n" + "No. Control: " + noControl,
 				"Información del Estudiante", JOptionPane.INFORMATION_MESSAGE);
+
+		int option = JOptionPane.showConfirmDialog(this,
+				"¿Deseas abrir la gestión de calificaciones de este estudiante?", "Abrir módulo de calificaciones",
+				JOptionPane.YES_NO_OPTION);
+
+		if (option == JOptionPane.YES_OPTION) {
+			GestionarCalificaciones ventana = new GestionarCalificaciones(noControl);
+			ventana.setVisible(true);
+		}
+
 	}
 
 	private void agregarEstudiante() {
@@ -342,8 +322,12 @@ public class MainForTeachers extends JFrame {
 		String nombre = model.getValueAt(selectedRow, 1).toString();
 		String apellido = model.getValueAt(selectedRow, 2).toString();
 		String email = model.getValueAt(selectedRow, 3).toString();
+		String nombreGrupo = model.getValueAt(selectedRow, 6) != null ? model.getValueAt(selectedRow, 6).toString()
+				: null;
 
-		EditarEstudiante editarFrame = new EditarEstudiante(this, id, nombre, apellido, email);
+		int grupoId = (nombreGrupo != null) ? obtenerIdGrupo(nombreGrupo) : -1;
+
+		EditarEstudiante editarFrame = new EditarEstudiante(this, id, nombre, apellido, email, grupoId);
 		editarFrame.setVisible(true);
 	}
 }
