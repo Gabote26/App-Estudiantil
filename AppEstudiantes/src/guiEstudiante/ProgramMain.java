@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
-public class ProgramMain extends JFrame {
+public class ProgramMain extends JFrame []
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -93,17 +93,17 @@ public class ProgramMain extends JFrame {
 		
 		
 		
-		
-		
-		
-		ImageIcon original = new ImageIcon("images/calendario_example.png");
+		//Horarios(switch case)	
+
+		//NO BORRAR
+		ImageIcon original = new ImageIcon("resources/calendario_example.png");
 		Image imagenEscalada = original.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
+
 		JLabel lblIcon = new JLabel(new ImageIcon(imagenEscalada));
-		lblIcon.setBounds(497, 90, 274, 295);
+		lblIcon.setBounds(495, 90, 274, 295);
 		contentPane.add(lblIcon);
-		
-		
-		
-		
+
+		//.....................................................................................
+
 	}
-}
+	}
