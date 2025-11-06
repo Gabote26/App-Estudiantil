@@ -267,14 +267,26 @@ public class MainForTeachers extends JFrame {
 						+ "\n" + "No. Control: " + noControl,
 				"Información del Estudiante", JOptionPane.INFORMATION_MESSAGE);
 
-		int option = JOptionPane.showConfirmDialog(this,
+		int option1 = JOptionPane.showConfirmDialog(this,
 				"¿Deseas abrir la gestión de calificaciones de este estudiante?", "Abrir módulo de calificaciones",
 				JOptionPane.YES_NO_OPTION);
 
-		if (option == JOptionPane.YES_OPTION) {
+		if (option1 == JOptionPane.YES_OPTION) {
 			GestionarCalificaciones ventana = new GestionarCalificaciones(noControl);
 			ventana.setVisible(true);
 		}
+		
+		if (option1 != JOptionPane.YES_OPTION) {
+			int option2 = JOptionPane.showConfirmDialog(this,
+					"¿Deseas abrir la gestión de faltas de este estudiante?", "Abrir módulo de faltas",
+					JOptionPane.YES_NO_OPTION);
+			
+			if (option2 == JOptionPane.YES_OPTION) {
+				GestionarFaltas ventana = new GestionarFaltas(noControl);
+				ventana.setVisible(true);
+			}
+		}
+		
 
 	}
 
