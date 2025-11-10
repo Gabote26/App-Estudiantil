@@ -205,19 +205,19 @@ public class GestionarMateriasDeAlumno extends JFrame {
     }
     
     private void inicializarComponentes() {
-        setLayout(new BorderLayout(10, 10));
+        getContentPane().setLayout(new BorderLayout(10, 10));
         
         // Panel superior - Información del alumno
         JPanel panelSuperior = crearPanelInformacion();
-        add(panelSuperior, BorderLayout.NORTH);
+        getContentPane().add(panelSuperior, BorderLayout.NORTH);
         
         // Panel central - Tabla de materias
         JPanel panelCentral = crearPanelTabla();
-        add(panelCentral, BorderLayout.CENTER);
+        getContentPane().add(panelCentral, BorderLayout.CENTER);
         
         // Panel inferior - Botones
         JPanel panelInferior = crearPanelBotones();
-        add(panelInferior, BorderLayout.SOUTH);
+        getContentPane().add(panelInferior, BorderLayout.SOUTH);
         
         actualizarEstadisticas();
     }
@@ -267,7 +267,7 @@ public class GestionarMateriasDeAlumno extends JFrame {
     }
     
     private JLabel crearEtiquetaInfo(String texto) {
-        JLabel lbl = new JLabel(texto);
+        JLabel lbl = new JLabel("👤 Alumno: <dynamic>");
         lbl.setFont(new Font("Arial", Font.PLAIN, 14));
         lbl.setForeground(Color.WHITE);
         return lbl;
