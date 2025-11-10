@@ -190,11 +190,11 @@ public class HorariosEstudiantes extends JFrame {
 
             if (!imagenCargada) {
                 imagenLabel.setIcon(null);
-                JOptionPane.showMessageDialog(this, "No se encontró el horario");
+                JOptionPane.showMessageDialog(this, "No se encontró el horario elegido");
             }
         } else {
             imagenLabel.setIcon(null);
-            JOptionPane.showMessageDialog(this, "No se encontró el horario");
+            JOptionPane.showMessageDialog(this, "No se encontró el horario elegido");
         }
     }
 }
