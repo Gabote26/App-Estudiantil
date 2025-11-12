@@ -15,34 +15,51 @@ public class GestionarCalificaciones extends JFrame {
 		this.numControl = numControl;
 
 		setTitle("Gestión de Calificaciones - Alumno: " + numControl);
-		setSize(400, 400);
+		setSize(450, 400);
 		setLocationRelativeTo(null);
-		setLayout(new GridLayout(8, 2, 10, 10));
+		getContentPane().setLayout(null);
 
-		add(new JLabel("Lengua:"));
+		JLabel label = new JLabel("Lengua:");
+		label.setBounds(22, 21, 107, 36);
+		getContentPane().add(label);
 		txtLengua = new JTextField();
-		add(txtLengua);
+		txtLengua.setBounds(192, 21, 213, 36);
+		getContentPane().add(txtLengua);
 
-		add(new JLabel("Humanidades:"));
+		JLabel label_1 = new JLabel("Humanidades:");
+		label_1.setBounds(22, 67, 107, 36);
+		getContentPane().add(label_1);
 		txtHumanidades = new JTextField();
-		add(txtHumanidades);
+		txtHumanidades.setBounds(192, 67, 213, 36);
+		getContentPane().add(txtHumanidades);
 
-		add(new JLabel("Matemáticas:"));
+		JLabel label_2 = new JLabel("Matemáticas:");
+		label_2.setBounds(22, 113, 107, 36);
+		getContentPane().add(label_2);
 		txtMatematicas = new JTextField();
-		add(txtMatematicas);
+		txtMatematicas.setBounds(192, 113, 213, 36);
+		getContentPane().add(txtMatematicas);
 
-		add(new JLabel("Sociales:"));
+		JLabel label_3 = new JLabel("Sociales:");
+		label_3.setBounds(22, 159, 107, 36);
+		getContentPane().add(label_3);
 		txtSociales = new JTextField();
-		add(txtSociales);
+		txtSociales.setBounds(192, 159, 213, 36);
+		getContentPane().add(txtSociales);
 
-		add(new JLabel("Ciencias:"));
+		JLabel label_4 = new JLabel("Ciencias:");
+		label_4.setBounds(22, 205, 107, 36);
+		getContentPane().add(label_4);
 		txtCiencias = new JTextField();
-		add(txtCiencias);
+		txtCiencias.setBounds(192, 205, 213, 36);
+		getContentPane().add(txtCiencias);
 
 		JButton btnGuardar = new JButton("💾 Guardar Cambios");
+		btnGuardar.setBounds(230, 276, 175, 36);
 		JButton btnCargar = new JButton("📥 Cargar Existentes");
-		add(btnCargar);
-		add(btnGuardar);
+		btnCargar.setBounds(33, 276, 175, 36);
+		getContentPane().add(btnCargar);
+		getContentPane().add(btnGuardar);
 
 		btnCargar.addActionListener(e -> cargarCalificaciones());
 		btnGuardar.addActionListener(e -> guardarCalificaciones());
