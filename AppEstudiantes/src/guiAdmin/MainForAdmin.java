@@ -1,4 +1,4 @@
-package guiProfesor;
+package guiAdmin;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -6,13 +6,17 @@ import javax.swing.event.*;
 import javax.swing.border.EmptyBorder;
 
 import db.ConexionMysql;
+import guiProfesor.AgregarEstudiante;
+import guiProfesor.EditarEstudiante;
+import guiProfesor.EnviarMensaje;
+import guiProfesor.GestionarEstudiante;
 import utils.RoundedButton;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class MainForTeachers extends JFrame {
+public class MainForAdmin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,15 +28,15 @@ public class MainForTeachers extends JFrame {
 	private final ConexionMysql connectionDB = new ConexionMysql();
 
 	private JPanel actionPanel;
-	private RoundedButton btnRefrescar, btnSendMsg;
+	private RoundedButton btnRefrescar, btnAgregar, btnEliminar, btnEditar, btnSendMsg;
 	private RoundedButton btnSeleccionarEstudiante;
 
 	private boolean darkMode = false;
 	private RoundedButton btnToggleTheme;
 
-	public MainForTeachers(String nombre) {
+	public MainForAdmin(String nombre) {
 		this.nombre = nombre;
-		setTitle("Panel del Profesor - Bienvenido");
+		setTitle("🛠️ Panel de Administrador");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1350, 600);
 		setLocationRelativeTo(null);
@@ -224,20 +228,34 @@ public class MainForTeachers extends JFrame {
 
 		btnRefrescar = new RoundedButton("🔄 Refrescar Lista", 20);
 		btnSendMsg = new RoundedButton("📣 Enviar Anuncio", 20);
+		btnAgregar = new RoundedButton("➕ Agregar Estudiante", 20);
+		btnEliminar = new RoundedButton("🗑️ Eliminar Estudiante", 20);
+		btnEditar = new RoundedButton("✏️ Editar Estudiante", 20);
 		RoundedButton btnGestionar = new RoundedButton("🛠️ Gestionar", 20);
 		btnGestionar.setEnabled(false);
 
 		styleActionButton(btnRefrescar, new Color(245, 245, 245), new Color(230, 230, 230));
 		styleActionButton(btnSendMsg, new Color(245, 245, 245), new Color(230, 230, 230));
+		styleActionButton(btnAgregar, new Color(189, 255, 222), new Color(220, 235, 255));
+		styleActionButton(btnEliminar, new Color(252, 199, 199), new Color(255, 220, 220));
+		styleActionButton(btnEditar, new Color(217, 237, 252), new Color(230, 230, 230));
 		styleActionButton(btnGestionar, new Color(245, 245, 245), new Color(230, 230, 230));
+		btnEliminar.setEnabled(false);
+		btnEditar.setEnabled(false);
 
 		btnGestionar.setBounds(10, 10, 160, 30);
 		btnRefrescar.setBounds(180, 10, 160, 30);
 		btnSendMsg.setBounds(350, 10, 160, 30);
+		btnAgregar.setBounds(520, 10, 180, 30);
+		btnEliminar.setBounds(710, 10, 180, 30);
+		btnEditar.setBounds(900, 10, 180, 30);
 
 		actionPanel.add(btnGestionar);
 		actionPanel.add(btnRefrescar);
 		actionPanel.add(btnSendMsg);
+		actionPanel.add(btnAgregar);
+		actionPanel.add(btnEliminar);
+		actionPanel.add(btnEditar);
 
 		getContentPane().add(actionPanel);
 
@@ -250,6 +268,8 @@ public class MainForTeachers extends JFrame {
 					JOptionPane.showMessageDialog(this, "Por favor selecciona un estudiante en la tabla.");
 				} else {
 					actionPanel.setVisible(true);
+					btnEliminar.setEnabled(true);
+					btnEditar.setEnabled(true);
 					btnGestionar.setEnabled(true);
 					btnSeleccionarEstudiante.setBackground(new Color(102, 187, 106));
 					btnSeleccionarEstudiante.setForeground(Color.WHITE);
@@ -257,6 +277,8 @@ public class MainForTeachers extends JFrame {
 				}
 			} else {
 				actionPanel.setVisible(false);
+				btnEliminar.setEnabled(false);
+				btnEditar.setEnabled(false);
 				btnGestionar.setEnabled(true);
 				btnSeleccionarEstudiante.setBackground(new Color(245, 245, 245));
 				btnSeleccionarEstudiante.setForeground(new Color(50, 50, 50));
@@ -275,18 +297,21 @@ public class MainForTeachers extends JFrame {
 
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
+		btnEliminar.addActionListener(e -> eliminarEstudiante());
+		btnEditar.addActionListener(e -> editarEstudiante());
+		btnAgregar.addActionListener(e -> agregarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 
 		btnToggleTheme.addActionListener(e -> {
 			darkMode = !darkMode;
 			applyTheme(darkMode, headerPanel, title, subtitle, searchPanel, lblBuscar, cbFiltro, txtBuscar, scrollPane,
 					th, tableEstudiantes, grupoPanel, lblGrupo, cbGrupos, btnSeleccionarEstudiante, actionPanel,
-					btnRefrescar, btnGestionar, btnToggleTheme);
+					btnRefrescar, btnAgregar, btnEliminar, btnEditar, btnGestionar, btnToggleTheme);
 		});
 
 		applyTheme(darkMode, headerPanel, title, subtitle, searchPanel, lblBuscar, cbFiltro, txtBuscar, scrollPane, th,
 				tableEstudiantes, grupoPanel, lblGrupo, cbGrupos, btnSeleccionarEstudiante, actionPanel, btnRefrescar,
-				btnGestionar, btnToggleTheme);
+				btnAgregar, btnEliminar, btnEditar, btnGestionar, btnToggleTheme);
 
 		cargarGrupos();
 		cargarEstudiantes();
@@ -339,7 +364,8 @@ public class MainForTeachers extends JFrame {
 			JLabel lblBuscar, JComboBox<String> cbFiltro, JTextField txtBuscar, JScrollPane scrollPane, JTableHeader th,
 			JTable tableEstudiantes, JPanel grupoPanel, JLabel lblGrupo, JComboBox<String> cbGrupos,
 			RoundedButton btnSeleccionarEstudiante, JPanel actionPanel, RoundedButton btnRefrescar,
-			RoundedButton btnGestionar, RoundedButton btnToggleTheme) {
+			RoundedButton btnAgregar, RoundedButton btnEliminar, RoundedButton btnEditar, RoundedButton btnGestionar,
+			RoundedButton btnToggleTheme) {
 
 		if (dark) {
 			Color bg = new Color(34, 38, 48);
@@ -411,8 +437,6 @@ public class MainForTeachers extends JFrame {
 			tableEstudiantes.setGridColor(new Color(240, 240, 240));
 			grupoPanel.setBackground(panel);
 			lblGrupo.setForeground(text);
-			grupoPanel.setBackground(panel);
-			lblGrupo.setForeground(text);
 			cbGrupos.setBackground(inputBg);
 			cbGrupos.setForeground(text);
 			btnSeleccionarEstudiante.setBackground(new Color(245, 245, 245));
@@ -475,9 +499,52 @@ public class MainForTeachers extends JFrame {
 		}
 	}
 
-	// =================== FUNCIONES DISPONIBLES ===================
+	// =================== CRUD ===================
 	private void enviarMensaje() {
 		new EnviarMensaje().setVisible(true);
+	}
+
+	private void agregarEstudiante() {
+		new AgregarEstudiante(null, this).setVisible(true);
+	}
+
+	private void eliminarEstudiante() {
+		int selectedRow = tableEstudiantes.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "Seleccione un estudiante primero.");
+			return;
+		}
+		int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este estudiante?",
+				"Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+		if (confirm == JOptionPane.YES_OPTION) {
+			int id = (int) model.getValueAt(selectedRow, 0);
+			String query = "DELETE FROM usuarios WHERE id = ?";
+			try (Connection cn = connectionDB.conectar(); PreparedStatement ps = cn.prepareStatement(query)) {
+				ps.setInt(1, id);
+				ps.executeUpdate();
+				JOptionPane.showMessageDialog(this, "Estudiante eliminado correctamente.");
+				cargarEstudiantes();
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(this, "Error al eliminar estudiante:\n" + e.getMessage(), "Error SQL",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private void editarEstudiante() {
+		int selectedRow = tableEstudiantes.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "Seleccione un estudiante primero.");
+			return;
+		}
+		int id = (int) model.getValueAt(selectedRow, 0);
+		String nombre = model.getValueAt(selectedRow, 1).toString();
+		String apellido = model.getValueAt(selectedRow, 2).toString();
+		String email = model.getValueAt(selectedRow, 3).toString();
+		String nombreGrupo = model.getValueAt(selectedRow, 6) != null ? model.getValueAt(selectedRow, 6).toString()
+				: null;
+		int grupoId = (nombreGrupo != null) ? obtenerIdGrupo(nombreGrupo) : -1;
+		new EditarEstudiante(null, this, id, nombre, apellido, email, grupoId).setVisible(true);
 	}
 
 	private void gestionarEstudiante() {

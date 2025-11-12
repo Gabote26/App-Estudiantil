@@ -1,10 +1,10 @@
 package guiProfesor;
 
+import java.awt.*;
+import java.sql.*;
 import javax.swing.*;
 import db.ConexionMysql;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+import guiAdmin.MainForAdmin;
 
 public class AgregarEstudiante extends JFrame {
 
@@ -14,13 +14,15 @@ public class AgregarEstudiante extends JFrame {
 	private JPasswordField txtPassword;
 	private final ConexionMysql connectionDB = new ConexionMysql();
 	private MainForTeachers parentFrame;
+	private MainForAdmin parentAdminFrame;
 	private JTextField txtApellido;
 	private JTextField txtNumControl;
 	private JComboBox<String> cbGrupo;
 	private int grupoSeleccionadoId = -1;
 
-	public AgregarEstudiante(MainForTeachers parent) {
+	public AgregarEstudiante(MainForTeachers parent, MainForAdmin parentAdmin) {
 		this.parentFrame = parent;
+		this.parentAdminFrame = parentAdmin;
 
 		setTitle("Agregar Nuevo Estudiante");
 		setSize(400, 454);

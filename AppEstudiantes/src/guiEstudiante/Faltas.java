@@ -43,7 +43,7 @@ public class Faltas extends JFrame {
 
 	public Faltas(String numControl) {
 		this.numControl = numControl;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 700, 513);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 0, 0));
@@ -78,9 +78,12 @@ public class Faltas extends JFrame {
 		scrollPane.setBounds(33, 267, 620, 170);
 		contentPane.add(scrollPane);
 		btnBuscar.addActionListener(e -> buscarRegistros());
+		
+		cargarDatosEstudiante();
 	}
 
 	private void buscarRegistros() {
+		cargarDatosEstudiante();
 		modelo.setRowCount(0);
 		try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
 			String linea;

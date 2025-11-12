@@ -1,59 +1,30 @@
 package guiEstudiante;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import db.ConexionMysql;
 import utils.RoundedButton;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.awt.event.ActionEvent;
-import java.awt.Color;
 
 public class ProgramMain extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private final ConexionMysql connectionDB = new ConexionMysql();
+	private final String numControl, nombre, apellido;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ProgramMain frame = new ProgramMain();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public ProgramMain() {
-		setTitle("Gestion de Estudiante ${user}");
+	public ProgramMain(String numControl, String nombre, String apellido) {
+		this.numControl = numControl;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		setTitle("Estudiante - " + nombre + " " + apellido);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 795, 595);
+		setBounds(100, 100, 950, 595);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setForeground(new Color(255, 255, 255));
@@ -61,12 +32,6 @@ public class ProgramMain extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JLabel title = new JLabel("ESTUDIANTE");
-		title.setForeground(new Color(0, 0, 0));
-		title.setBounds(10, 1, 115, 52);
-		title.setFont(new Font("Tahoma", Font.BOLD, 16));
-		contentPane.add(title);
 
 		RoundedButton btnNewButton = new RoundedButton("New button", 20);
 		btnNewButton.setBackground(new Color(128, 255, 128));
@@ -84,24 +49,27 @@ public class ProgramMain extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Faltas ventanaFaltas = new Faltas(numControl);
-			}
+				ventanaFaltas.setVisible(true);			}
 		});
 		btnNewButton_2.setBounds(373, 10, 125, 39);
 		contentPane.add(btnNewButton_2);
 
 		JButton btnNewButton_3 = new RoundedButton("New button", 20);
 		btnNewButton_3.setText("MATERIAS REPROBADAS");
-		btnNewButton_3.setBounds(508, 10, 137, 39);
+		btnNewButton_3.setBounds(508, 10, 185, 39);
 		contentPane.add(btnNewButton_3);
 
 		JButton btnNewButton_4 = new RoundedButton("New button", 20);
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				HorariosEstudiantes ventanaHorarios = new HorariosEstudiantes();
+				ventanaHorarios.setVisible(true);
+			}
+		});
 		btnNewButton_4.setText("HORARIOS");
-		btnNewButton_4.setBounds(655, 10, 116, 39);
+		btnNewButton_4.setBounds(700, 10, 116, 39);
 		contentPane.add(btnNewButton_4);
 
-		// Horarios(switch case)
-
-		// NO BORRAR
 		ImageIcon original = new ImageIcon("resources/calendario_example.png");
 		Image imagenEscalada = original.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
 

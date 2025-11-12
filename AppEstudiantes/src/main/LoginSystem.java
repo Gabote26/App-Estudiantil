@@ -1,6 +1,7 @@
 package main;
 
 import db.ConexionMysql;
+import guiAdmin.MainForAdmin;
 import guiEstudiante.ProgramMain;
 import guiProfesor.MainForTeachers;
 import utils.RoundedButton;
@@ -135,6 +136,11 @@ public class LoginSystem extends JFrame {
 		changePasswordBtn.setBackground(new Color(40, 153, 140));
 		changePasswordBtn.setBounds(149, 271, 153, 28);
 		container.add(changePasswordBtn);
+		
+		JLabel lblVersion = new JLabel("v1.0.0");
+		lblVersion.setForeground(new Color(238, 238, 238));
+		lblVersion.setBounds(417, 373, 37, 12);
+		container.add(lblVersion);
 
 		changePasswordBtn.addActionListener(
 				e -> JOptionPane.showMessageDialog(this, "Para resetear la contraseña, contacte al administrador",
@@ -164,7 +170,7 @@ public class LoginSystem extends JFrame {
 		}
 
 		//  Consulta de datos SQL en la base de datos
-		String query = "SELECT role FROM usuarios WHERE email = ? AND password = ?";
+		String query = "SELECT nombre, apellido, role, no_control FROM usuarios WHERE email = ? AND password = ?";
 
 		try (PreparedStatement ps = cn.prepareStatement(query)) {
 			ps.setString(1, user);
@@ -172,15 +178,20 @@ public class LoginSystem extends JFrame {
 
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
+					String nombreUsuario = rs.getString("nombre");
+					String apellidoUsuario = rs.getString("apellido");
 					String assignedRole = rs.getString("role");
+					String numControl = rs.getString("no_control");
 					
 					dispose();
 
 					// Abrir ventana correspondiente dependiendo del rol del usuario
 					if ("PROFESOR".equalsIgnoreCase(assignedRole)) {
-						new MainForTeachers().setVisible(true);
+						new MainForTeachers(nombreUsuario).setVisible(true);
 					} else if ("ESTUDIANTE".equalsIgnoreCase(assignedRole)) {
-						new ProgramMain().setVisible(true);
+						new ProgramMain(numControl, nombreUsuario, apellidoUsuario).setVisible(true);
+					} else if("ADMIN".equalsIgnoreCase(assignedRole)) {
+						new MainForAdmin(nombreUsuario).setVisible(true);
 					} else {
 						JOptionPane.showMessageDialog(this, "Rol desconocido: " + assignedRole, "Advertencia",
 								JOptionPane.WARNING_MESSAGE);

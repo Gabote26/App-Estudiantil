@@ -1,9 +1,10 @@
 package guiProfesor;
 
-import javax.swing.*;
-import db.ConexionMysql;
 import java.awt.*;
 import java.sql.*;
+import javax.swing.*;
+import db.ConexionMysql;
+import guiAdmin.MainForAdmin;
 
 public class EditarEstudiante extends JFrame {
 
@@ -17,10 +18,12 @@ public class EditarEstudiante extends JFrame {
 	private final int idEstudiante;
 	private final int grupoActualId;
 	private final MainForTeachers parentFrame;
+	private final MainForAdmin parentFrameAdmin;
 
-	public EditarEstudiante(MainForTeachers parent, int id, String nombre, String apellido, String email,
+	public EditarEstudiante(MainForTeachers parent, MainForAdmin parentAdmin, int id, String nombre, String apellido, String email,
 			int grupoActualId) {
 		this.parentFrame = parent;
+		this.parentFrameAdmin = parentAdmin;
 		this.idEstudiante = id;
 		this.grupoActualId = grupoActualId;
 
