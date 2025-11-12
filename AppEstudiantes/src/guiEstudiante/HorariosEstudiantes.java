@@ -1,7 +1,6 @@
 package guiEstudiante;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,11 @@ import javax.swing.border.EmptyBorder;
 
 public class HorariosEstudiantes extends JFrame {
 
-    private JPanel contentPane;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
     private JComboBox<String> comboBox_grupo, comboBox_semestre, comboBox_turno;
     private JScrollPane scrol;
     private JLabel imagenLabel;
