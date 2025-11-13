@@ -3,6 +3,7 @@ package guiEstudiante;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import calificaciones.calificacion;
 import db.ConexionMysql;
 import utils.RoundedButton;
 
@@ -41,6 +42,12 @@ public class ProgramMain extends JFrame {
 
 		JButton btnNewButton_1 = new RoundedButton("New button", 20);
 		btnNewButton_1.setText("CALIFICACIONES");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				calificacion winCalif = new calificacion();
+				winCalif.setVisible(true);
+			}
+		});
 		btnNewButton_1.setBounds(248, 10, 115, 39);
 		contentPane.add(btnNewButton_1);
 
@@ -59,14 +66,13 @@ public class ProgramMain extends JFrame {
 		btnNewButton_3.setBounds(508, 10, 185, 39);
 		contentPane.add(btnNewButton_3);
 
-		JButton btnNewButton_4 = new RoundedButton("New button", 20);
+		JButton btnNewButton_4 = new RoundedButton("🗓️ HORARIOS", 20);
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				HorariosEstudiantes ventanaHorarios = new HorariosEstudiantes();
 				ventanaHorarios.setVisible(true);
 			}
 		});
-		btnNewButton_4.setText("HORARIOS");
 		btnNewButton_4.setBounds(700, 10, 116, 39);
 		contentPane.add(btnNewButton_4);
 

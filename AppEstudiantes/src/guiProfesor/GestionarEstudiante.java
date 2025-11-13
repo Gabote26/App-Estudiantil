@@ -47,19 +47,19 @@ public class GestionarEstudiante extends JFrame {
 		JLabel lblTitulo = new JLabel("📚 HISTORIAL ACADÉMICO");
 		lblTitulo.setBounds(393, 27, 306, 28);
 		lblTitulo.setForeground(new Color(255, 215, 0));
-		lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+		lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 24));
 		lblTitulo.setAlignmentX(0.5f);
 		titleSection.add(lblTitulo);
 
 		JLabel lblAlumno = new JLabel("👤 Alumno: " + nombre + " " + apellido);
 		lblAlumno.setBounds(38, 65, 480, 28);
-		lblAlumno.setFont(new Font("Arial", Font.PLAIN, 17));
+		lblAlumno.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 17));
 		lblAlumno.setForeground(Color.WHITE);
 		titleSection.add(lblAlumno);
 
 		JLabel lblNumDe = new JLabel("🔑 Num. de Control: " + numControl);
 		lblNumDe.setForeground(Color.WHITE);
-		lblNumDe.setFont(new Font("Arial", Font.PLAIN, 17));
+		lblNumDe.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 17));
 		lblNumDe.setBounds(742, 65, 374, 28);
 		titleSection.add(lblNumDe);
 

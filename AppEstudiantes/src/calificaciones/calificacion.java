@@ -39,7 +39,7 @@ public class calificacion extends JFrame {
 
 	public calificacion() {
 		setBackground(new Color(0, 0, 0));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 300, 450, 260);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));

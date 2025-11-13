@@ -57,7 +57,7 @@ public class LoginSystem extends JFrame {
 		loginInformation.setBounds(52, 92, 360, 23);
 		container.add(loginInformation);
 
-		// Placeholders
+		// Placeholders para los inputs
 		String placeholderUser = "Usuario (No. de Control)";
 		String placeholderPassword = "Contraseña";
 
@@ -129,22 +129,23 @@ public class LoginSystem extends JFrame {
 
 		loginBtn.addActionListener(e -> iniciarSesion(placeholderUser, placeholderPassword));
 
-		// Botón de recuperación de contraseña
+		// Botón de recuperación de contraseña (Implementar)
 		RoundedButton changePasswordBtn = new RoundedButton("Recuperar Contraseña", 20);
 		changePasswordBtn.setForeground(Color.WHITE);
 		changePasswordBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		changePasswordBtn.setBackground(new Color(40, 153, 140));
 		changePasswordBtn.setBounds(149, 271, 153, 28);
 		container.add(changePasswordBtn);
-		
+
+		changePasswordBtn.addActionListener(
+				e -> JOptionPane.showMessageDialog(this, "Para resetear la contraseña, contacte al administrador",
+						"Información", JOptionPane.INFORMATION_MESSAGE));
+
 		JLabel lblVersion = new JLabel("v1.0.0");
 		lblVersion.setForeground(new Color(238, 238, 238));
 		lblVersion.setBounds(417, 373, 37, 12);
 		container.add(lblVersion);
 
-		changePasswordBtn.addActionListener(
-				e -> JOptionPane.showMessageDialog(this, "Para resetear la contraseña, contacte al administrador",
-						"Información", JOptionPane.INFORMATION_MESSAGE));
 	}
 
 	/**
@@ -169,7 +170,7 @@ public class LoginSystem extends JFrame {
 			return;
 		}
 
-		//  Consulta de datos SQL en la base de datos
+		// Consulta de datos SQL en la base de datos
 		String query = "SELECT nombre, apellido, role, no_control FROM usuarios WHERE email = ? AND password = ?";
 
 		try (PreparedStatement ps = cn.prepareStatement(query)) {
@@ -182,16 +183,16 @@ public class LoginSystem extends JFrame {
 					String apellidoUsuario = rs.getString("apellido");
 					String assignedRole = rs.getString("role");
 					String numControl = rs.getString("no_control");
-					
+
 					dispose();
 
 					// Abrir ventana correspondiente dependiendo del rol del usuario
 					if ("PROFESOR".equalsIgnoreCase(assignedRole)) {
-						new MainForTeachers(nombreUsuario).setVisible(true);
+						new MainForTeachers(nombreUsuario).setVisible(true); // Ventana del profesor
 					} else if ("ESTUDIANTE".equalsIgnoreCase(assignedRole)) {
-						new ProgramMain(numControl, nombreUsuario, apellidoUsuario).setVisible(true);
-					} else if("ADMIN".equalsIgnoreCase(assignedRole)) {
-						new MainForAdmin(nombreUsuario).setVisible(true);
+						new ProgramMain(numControl, nombreUsuario, apellidoUsuario).setVisible(true); // Ventana de usuarios
+					} else if ("ADMIN".equalsIgnoreCase(assignedRole)) {
+						new MainForAdmin(nombreUsuario).setVisible(true); // Panel de administrador
 					} else {
 						JOptionPane.showMessageDialog(this, "Rol desconocido: " + assignedRole, "Advertencia",
 								JOptionPane.WARNING_MESSAGE);

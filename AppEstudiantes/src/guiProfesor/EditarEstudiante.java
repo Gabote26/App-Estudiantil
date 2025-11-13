@@ -4,7 +4,7 @@ import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
 import db.ConexionMysql;
-import guiAdmin.MainForAdmin;
+import utils.Recargable; // ✅ interfaz común
 
 public class EditarEstudiante extends JFrame {
 
@@ -15,15 +15,13 @@ public class EditarEstudiante extends JFrame {
 	private JComboBox<GrupoItem> cbGrupo;
 
 	private final ConexionMysql connectionDB = new ConexionMysql();
+	private final Recargable ventanaPrincipal; // interfaz compartida para mantener compatibilidad
 	private final int idEstudiante;
 	private final int grupoActualId;
-	private final MainForTeachers parentFrame;
-	private final MainForAdmin parentFrameAdmin;
 
-	public EditarEstudiante(MainForTeachers parent, MainForAdmin parentAdmin, int id, String nombre, String apellido, String email,
+	public EditarEstudiante(Recargable ventanaPrincipal, int id, String nombre, String apellido, String email,
 			int grupoActualId) {
-		this.parentFrame = parent;
-		this.parentFrameAdmin = parentAdmin;
+		this.ventanaPrincipal = ventanaPrincipal;
 		this.idEstudiante = id;
 		this.grupoActualId = grupoActualId;
 
@@ -86,6 +84,7 @@ public class EditarEstudiante extends JFrame {
 		btnGuardar.addActionListener(e -> guardarCambios());
 	}
 
+	// =================== Clase interna para items del comboBox ===================
 	private static class GrupoItem {
 		int id;
 		String nombre;
@@ -101,6 +100,7 @@ public class EditarEstudiante extends JFrame {
 		}
 	}
 
+	// =================== Cargar grupos ===================
 	private void cargarGrupos() {
 		cbGrupo.removeAllItems();
 		String query = "SELECT id, nombre_grupo FROM grupos";
@@ -114,9 +114,8 @@ public class EditarEstudiante extends JFrame {
 			while (rs.next()) {
 				GrupoItem item = new GrupoItem(rs.getInt("id"), rs.getString("nombre_grupo"));
 				cbGrupo.addItem(item);
-				if (rs.getInt("id") == grupoActualId) {
+				if (rs.getInt("id") == grupoActualId)
 					seleccionado = item;
-				}
 			}
 			if (seleccionado != null)
 				cbGrupo.setSelectedItem(seleccionado);
@@ -127,6 +126,7 @@ public class EditarEstudiante extends JFrame {
 		}
 	}
 
+	// =================== Guardar cambios ===================
 	private void guardarCambios() {
 		String nuevoNombre = txtNombre.getText().trim();
 		String nuevoApellido = txtApellido.getText().trim();
@@ -167,8 +167,9 @@ public class EditarEstudiante extends JFrame {
 
 			if (rowsAffected > 0) {
 				JOptionPane.showMessageDialog(this, "✅ Datos actualizados correctamente.");
-				parentFrame.cargarEstudiantes(); // Refresca la tabla principal
-				dispose(); // Cierra la ventana de edición
+				if (ventanaPrincipal != null)
+					ventanaPrincipal.cargarEstudiantes(); // refrescar las ventanas
+				dispose();
 			} else {
 				JOptionPane.showMessageDialog(this, "⚠️ No se pudo actualizar el estudiante.");
 			}
