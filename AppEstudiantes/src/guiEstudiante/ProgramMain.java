@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import calificaciones.calificacion;
 import db.ConexionMysql;
+import guiAdmin.noticias;
 import utils.RoundedButton;
 
 import java.awt.*;
@@ -82,6 +83,13 @@ public class ProgramMain extends JFrame {
 		JLabel lblIcon = new JLabel(new ImageIcon(imagenEscalada));
 		lblIcon.setBounds(495, 90, 274, 295);
 		contentPane.add(lblIcon);
+		
+		
+		noticias noti1 = new noticias();
+		String noticia1 = noti1.NOti1(String);
+		JLabel lblNewLabel = new JLabel(noticia1);
+		lblNewLabel.setBounds(46, 87, 274, 39);
+		contentPane.add(lblNewLabel);
 
 		// .....................................................................................
 
