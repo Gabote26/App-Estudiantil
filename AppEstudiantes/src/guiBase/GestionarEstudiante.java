@@ -1,4 +1,4 @@
-package guiProfesor;
+package guiBase;
 
 import db.ConexionMysql;
 

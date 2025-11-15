@@ -1,10 +1,10 @@
 package guiAdmin;
 
+import guiBase.AgregarEstudiante;
 import guiBase.BaseMainFrame;
-import guiProfesor.AgregarEstudiante;
-import guiProfesor.EditarEstudiante;
-import guiProfesor.EnviarMensaje;
-import guiProfesor.GestionarEstudiante;
+import guiBase.EditarEstudiante;
+import guiBase.EnviarMensaje;
+import guiBase.GestionarEstudiante;
 import utils.Recargable;
 
 import javax.swing.*;
@@ -22,19 +22,6 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 	public MainForAdmin(String nombre) {
 		super("🛠️ Panel de Administrador", "Bienvenido " + nombre);
 		this.nombre = nombre;
-		
-		JButton btnnoti= new JButton("Noticias");
-		btnnoti.setFont(new Font("Roboto Condensed", Font.PLAIN, 31));
-		btnnoti.setBounds(698, 86, 306, 30);
-		getContentPane().add(btnnoti);
-		btnnoti.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			noticias noticia = new noticias();	
-			noticia.setVisible(true);
-			}
-		});
 
 		// Asignar listeners a los botones
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
@@ -46,13 +33,6 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 	}
 
 	// ========== ACCIONES ESPECÍFICAS DE ADMINISTRADOR ==========
-
-	
-	
-	
-	
-	
-	
 	
 	@Override
 	protected void eliminarEstudiante() {

@@ -1,4 +1,4 @@
-package guiProfesor;
+package guiBase;
 
 import java.awt.*;
 import java.sql.*;

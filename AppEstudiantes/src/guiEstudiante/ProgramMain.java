@@ -86,10 +86,7 @@ public class ProgramMain extends JFrame {
 		
 		
 		noticias noti1 = new noticias();
-		String noticia1 = noti1.NOti1(String);
-		JLabel lblNewLabel = new JLabel(noticia1);
-		lblNewLabel.setBounds(46, 87, 274, 39);
-		contentPane.add(lblNewLabel);
+		
 
 		// .....................................................................................
 

@@ -1,6 +1,9 @@
 package guiProfesor;
 
 import guiBase.BaseMainFrame;
+import guiBase.EditarEstudiante;
+import guiBase.EnviarMensaje;
+import guiBase.GestionarEstudiante;
 import utils.Recargable;
 
 import javax.swing.*;
