@@ -9,10 +9,12 @@ import utils.Recargable;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MainForTeachers extends BaseMainFrame implements Recargable {
 
+	private static final long serialVersionUID = 1L;
 	private final String nombre;
 
 	public MainForTeachers(String nombre) {
@@ -25,11 +27,11 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		btnEliminar.setVisible(false);
 		btnEliminar.setEnabled(false);
 
-		// Asignacion de listeners a los botones
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
 		btnEditar.addActionListener(e -> editarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
+		agregarBotonAsistencias();
 	}
 
 	// ========= ACCIONES ESPECÍFICAS DEL PROFESOR =========
@@ -56,7 +58,12 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 
 	@Override
 	protected void enviarMensaje() {
-		new EnviarMensaje().setVisible(true);
+		int usuarioId = obtenerIdUsuario(this.nombre);
+		if (usuarioId > 0) {
+			new EnviarMensaje(usuarioId).setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(this, "Error al obtener ID de usuario");
+		}
 	}
 
 	@Override
@@ -105,15 +112,79 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 			new GestionarEstudiante(noControl, nombre, apellido).setVisible(true);
 	}
 
+	// ========= GESTIÓN DE ASISTENCIAS =========
+
+	private void agregarBotonAsistencias() {
+		String materiaAsignada = obtenerMateriaProfesor();
+		
+		utils.RoundedButton btnAsistencias = new utils.RoundedButton("📋 Gestionar Asistencias", 20);
+		btnAsistencias.setBounds(10, 50, 190, 30);
+		btnAsistencias.setBackground(new java.awt.Color(245, 245, 245));
+		btnAsistencias.setForeground(new java.awt.Color(48, 48, 48));
+		btnAsistencias.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 13));
+		btnAsistencias.addActionListener(e -> {
+			new GestionarAsistencias(materiaAsignada).setVisible(true);
+		});
+		
+		actionPanel.add(btnAsistencias);
+		
+		// Ajustar las posiciones para evitar sobreposiciones o mal diseño
+		btnRefrescar.setBounds(210, 10, 160, 30);
+		btnEditar.setBounds(380, 10, 160, 30);
+		btnSendMsg.setBounds(550, 10, 160, 30);
+		btnGestionar.setBounds(720, 10, 180, 30);
+	}
+
+	private String obtenerMateriaProfesor() {
+		String sql = "SELECT materia_asignada FROM usuarios WHERE nombre = ? AND role = 'PROFESOR'";
+		
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setString(1, this.nombre);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				String materia = rs.getString("materia_asignada");
+				return (materia != null && !materia.isEmpty()) ? materia : null;
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error al obtener materia: " + e.getMessage());
+		}
+		
+		return null;
+	}
+
+	private int obtenerIdUsuario(String nombre) {
+		String sql = "SELECT id FROM usuarios WHERE nombre = ? AND role = 'PROFESOR'";
+		
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setString(1, nombre);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error al obtener ID: " + e.getMessage());
+		}
+		
+		return -1;
+	}
+
 	/**
-	 * Actualizar el grupo de un estudiante en la base de datos mediante una consulta sql
+	 * Actualizar el grupo de un estudiante en la base de datos
 	 * @param idEstudiante ID del estudiante a actualizar
 	 * @param nuevoGrupoId ID del nuevo grupo
 	 */
 	public void actualizarGrupoEstudiante(int idEstudiante, int nuevoGrupoId) {
 		String query = "UPDATE usuarios SET grupo_id = ? WHERE id = ?";
 		try (Connection cn = connectionDB.conectar(); 
-			 PreparedStatement ps = cn.prepareStatement(query)) {
+		     PreparedStatement ps = cn.prepareStatement(query)) {
 			ps.setInt(1, nuevoGrupoId);
 			ps.setInt(2, idEstudiante);
 			ps.executeUpdate();

@@ -2,9 +2,6 @@ package utils;
 
 import java.util.prefs.Preferences;
 
-/**
- * Gestor de configuración de la aplicación usando Java Preferences API
- */
 public class ConfigManager {
     
     private static final Preferences prefs = Preferences.userNodeForPackage(ConfigManager.class);
@@ -22,7 +19,7 @@ public class ConfigManager {
     // =================== MÉTODOS DE TEMA ===================
     
     /**
-     * Guarda el tema seleccionado
+     * Guardar el tema seleccionado
      * @param tema "Claro", "Oscuro" o "Automático"
      */
     public static void setTema(String tema) {

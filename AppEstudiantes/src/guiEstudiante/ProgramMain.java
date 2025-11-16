@@ -5,13 +5,10 @@ import javax.swing.border.EmptyBorder;
 
 import calificaciones.calificacion;
 import db.ConexionMysql;
-import guiAdmin.noticias;
 import utils.RoundedButton;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.sql.*;
-import java.awt.event.ActionEvent;
 
 public class ProgramMain extends JFrame {
 
@@ -24,6 +21,7 @@ public class ProgramMain extends JFrame {
 		this.numControl = numControl;
 		this.nombre = nombre;
 		this.apellido = apellido;
+		
 		setTitle("Estudiante - " + nombre + " " + apellido);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 950, 595);
@@ -35,60 +33,199 @@ public class ProgramMain extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		RoundedButton btnNewButton = new RoundedButton("New button", 20);
-		btnNewButton.setBackground(new Color(128, 255, 128));
-		btnNewButton.setText("NOTICIAS");
-		btnNewButton.setBounds(123, 10, 115, 39);
-		contentPane.add(btnNewButton);
+		// ========== TÍTULO ==========
+		JLabel lblTitulo = new JLabel("Panel del Estudiante");
+		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		lblTitulo.setBounds(350, 10, 250, 30);
+		contentPane.add(lblTitulo);
 
-		JButton btnNewButton_1 = new RoundedButton("New button", 20);
-		btnNewButton_1.setText("CALIFICACIONES");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				calificacion winCalif = new calificacion();
-				winCalif.setVisible(true);
+		// ========== BOTONES PRINCIPALES ==========
+
+		RoundedButton btnMensajes = new RoundedButton("📬 Mis Mensajes", 20);
+		btnMensajes.setBackground(new Color(52, 152, 219));
+		btnMensajes.setForeground(Color.WHITE);
+		btnMensajes.setBounds(123, 60, 150, 39);
+		btnMensajes.addActionListener(e -> {
+			int usuarioId = obtenerIdUsuario(numControl);
+			if (usuarioId > 0) {
+				new BandejaMensajes(usuarioId).setVisible(true);
+			} else {
+				JOptionPane.showMessageDialog(this, "Error al cargar mensajes");
 			}
 		});
-		btnNewButton_1.setBounds(248, 10, 115, 39);
-		contentPane.add(btnNewButton_1);
+		contentPane.add(btnMensajes);
 
-		JButton btnNewButton_2 = new RoundedButton("New button", 20);
-		btnNewButton_2.setText("FALTAS");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Faltas ventanaFaltas = new Faltas(numControl);
-				ventanaFaltas.setVisible(true);			}
+		RoundedButton btnCalificaciones = new RoundedButton("📝 CALIFICACIONES", 20);
+		btnCalificaciones.setBounds(283, 60, 170, 39);
+		btnCalificaciones.addActionListener(e -> {
+			calificacion winCalif = new calificacion();
+			winCalif.setVisible(true);
 		});
-		btnNewButton_2.setBounds(373, 10, 125, 39);
-		contentPane.add(btnNewButton_2);
+		contentPane.add(btnCalificaciones);
 
-		JButton btnNewButton_3 = new RoundedButton("New button", 20);
-		btnNewButton_3.setText("MATERIAS REPROBADAS");
-		btnNewButton_3.setBounds(508, 10, 185, 39);
-		contentPane.add(btnNewButton_3);
-
-		JButton btnNewButton_4 = new RoundedButton("🗓️ HORARIOS", 20);
-		btnNewButton_4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				HorariosEstudiantes ventanaHorarios = new HorariosEstudiantes();
-				ventanaHorarios.setVisible(true);
+		RoundedButton btnAsistencias = new RoundedButton("📊 Mis Asistencias", 20);
+		btnAsistencias.setBackground(new Color(46, 204, 113));
+		btnAsistencias.setForeground(Color.WHITE);
+		btnAsistencias.setBounds(463, 60, 170, 39);
+		btnAsistencias.addActionListener(e -> {
+			try {
+				long nc = Long.parseLong(numControl);
+				new VerAsistencias(nc, nombre, apellido).setVisible(true);
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(this, 
+					"Error: Número de control inválido", 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE);
 			}
 		});
-		btnNewButton_4.setBounds(700, 10, 116, 39);
-		contentPane.add(btnNewButton_4);
+		contentPane.add(btnAsistencias);
 
-		ImageIcon original = new ImageIcon("resources/calendario_example.png");
-		Image imagenEscalada = original.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
+		RoundedButton btnFaltas = new RoundedButton("⚠️ FALTAS", 20);
+		btnFaltas.setBounds(643, 60, 125, 39);
+		btnFaltas.addActionListener(e -> {
+			Faltas ventanaFaltas = new Faltas(numControl);
+			ventanaFaltas.setVisible(true);
+		});
+		contentPane.add(btnFaltas);
 
-		JLabel lblIcon = new JLabel(new ImageIcon(imagenEscalada));
-		lblIcon.setBounds(495, 90, 274, 295);
-		contentPane.add(lblIcon);
+		RoundedButton btnHorarios = new RoundedButton("🗓️ HORARIOS", 20);
+		btnHorarios.setBounds(123, 110, 150, 39);
+		btnHorarios.addActionListener(e -> {
+			HorariosEstudiantes ventanaHorarios = new HorariosEstudiantes();
+			ventanaHorarios.setVisible(true);
+		});
+		contentPane.add(btnHorarios);
+
+		RoundedButton btnMateriasReprobadas = new RoundedButton("❌ MATERIAS REPROBADAS", 20);
+		btnMateriasReprobadas.setBounds(283, 110, 210, 39);
+		btnMateriasReprobadas.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, 
+				"Módulo en desarrollo", 
+				"Próximamente", 
+				JOptionPane.INFORMATION_MESSAGE);
+		});
+		contentPane.add(btnMateriasReprobadas);
+
+		// ========== IMAGEN DECORATIVA ==========
+		try {
+			ImageIcon original = new ImageIcon("resources/calendario_example.png");
+			Image imagenEscalada = original.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
+			JLabel lblIcon = new JLabel(new ImageIcon(imagenEscalada));
+			lblIcon.setBounds(495, 200, 274, 295);
+			contentPane.add(lblIcon);
+		} catch (Exception e) {
+			System.err.println("No se pudo cargar la imagen: " + e.getMessage());
+		}
+
+		// ========== INFORMACIÓN DEL ESTUDIANTE ==========
+		JPanel panelInfo = new JPanel();
+		panelInfo.setBackground(new Color(240, 240, 240));
+		panelInfo.setBounds(123, 200, 350, 100);
+		panelInfo.setBorder(BorderFactory.createTitledBorder("Información del Estudiante"));
+		panelInfo.setLayout(null);
+		contentPane.add(panelInfo);
+
+		JLabel lblNombre = new JLabel("Nombre: " + nombre + " " + apellido);
+		lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblNombre.setBounds(10, 20, 330, 25);
+		panelInfo.add(lblNombre);
+
+		JLabel lblNumControl = new JLabel("No. Control: " + numControl);
+		lblNumControl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblNumControl.setBounds(10, 50, 330, 25);
+		panelInfo.add(lblNumControl);
+
+		String grupoNombre = obtenerGrupoEstudiante(numControl);
+		JLabel lblGrupo = new JLabel("Grupo: " + (grupoNombre != null ? grupoNombre : "Sin asignar"));
+		lblGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblGrupo.setBounds(10, 75, 330, 25);
+		panelInfo.add(lblGrupo);
+
+		// ========== BANDEJA DE MENSAJES NO LEÍDOS ==========
+		mostrarBadgeMensajes();
+	}
+
+	// ========== MÉTODOS AUXILIARES ==========
+
+	private int obtenerIdUsuario(String noControl) {
+		String sql = "SELECT id FROM usuarios WHERE no_control = ?";
 		
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setString(1, noControl);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error al obtener ID: " + e.getMessage());
+		}
 		
-		noticias noti1 = new noticias();
+		return -1;
+	}
+
+	private String obtenerGrupoEstudiante(String noControl) {
+		String sql = """
+			SELECT g.nombre_grupo 
+			FROM usuarios u 
+			LEFT JOIN grupos g ON u.grupo_id = g.id 
+			WHERE u.no_control = ?
+		""";
 		
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setString(1, noControl);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getString("nombre_grupo");
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error al obtener grupo: " + e.getMessage());
+		}
+		
+		return null;
+	}
 
-		// .....................................................................................
+	private void mostrarBadgeMensajes() {
+		int usuarioId = obtenerIdUsuario(numControl);
+		if (usuarioId <= 0) return;
 
+		String sql = """
+			SELECT COUNT(*) as total
+			FROM mensajes_destinatarios
+			WHERE destinatario_id = ? AND leido = FALSE
+		""";
+
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+
+			ps.setInt(1, usuarioId);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				int noLeidos = rs.getInt("total");
+				
+				if (noLeidos > 0) {
+					JLabel lblBadge = new JLabel(String.valueOf(noLeidos));
+					lblBadge.setFont(new Font("Segoe UI Emoji", Font.BOLD, 12));
+					lblBadge.setForeground(Color.WHITE);
+					lblBadge.setBackground(Color.RED);
+					lblBadge.setOpaque(true);
+					lblBadge.setHorizontalAlignment(SwingConstants.CENTER);
+					lblBadge.setBounds(260, 55, 25, 20);
+					lblBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+					contentPane.add(lblBadge);
+				}
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Error al contar mensajes: " + e.getMessage());
+		}
 	}
 }

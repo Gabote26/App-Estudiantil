@@ -37,7 +37,7 @@ public class HorariosEstudiantes extends JFrame {
 
 	public HorariosEstudiantes() {
 		setTitle("Consulta de Horarios");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 720, 600);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(128, 128, 192));

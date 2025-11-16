@@ -10,13 +10,12 @@ import utils.Recargable;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainForAdmin extends BaseMainFrame implements Recargable {
 
+	private static final long serialVersionUID = 1L;
 	private final String nombre;
 
 	public MainForAdmin(String nombre) {
@@ -84,7 +83,6 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 				: null;
 		int grupoId = (nombreGrupo != null) ? obtenerIdGrupo(nombreGrupo) : -1;
 
-		// Pasa la referencia de esta ventana (Recargable)
 		new EditarEstudiante(this, id, nombre, apellido, email, grupoId).setVisible(true);
 	}
 
@@ -95,7 +93,12 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 
 	@Override
 	protected void enviarMensaje() {
-		new EnviarMensaje().setVisible(true);
+		int usuarioId = obtenerIdUsuario(this.nombre);
+		if (usuarioId > 0) {
+			new EnviarMensaje(usuarioId).setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(this, "Error al obtener ID de usuario");
+		}
 	}
 
 	// ========= GESTIÓN DE ESTUDIANTES =========
@@ -127,5 +130,27 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 
 		if (opcion == JOptionPane.YES_OPTION)
 			new GestionarEstudiante(noControl, nombre, apellido).setVisible(true);
+	}
+
+	// ========= MÉTODO AUXILIAR =========
+
+	private int obtenerIdUsuario(String nombre) {
+		String sql = "SELECT id FROM usuarios WHERE nombre = ? AND role = 'ADMIN'";
+		
+		try (Connection cn = connectionDB.conectar();
+		     PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setString(1, nombre);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error al obtener ID: " + e.getMessage());
+		}
+		
+		return -1;
 	}
 }
