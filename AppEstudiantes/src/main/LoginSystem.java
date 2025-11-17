@@ -31,6 +31,7 @@ public class LoginSystem extends JFrame {
 		});
 	}
 
+
 	public LoginSystem() {
 		setTitle("Sistema de Inicio de Sesión");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -212,4 +213,4 @@ public class LoginSystem extends JFrame {
 			}
 		}
 	}
-}
+	}

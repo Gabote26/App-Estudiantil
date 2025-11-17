@@ -28,7 +28,7 @@ public class ProgramMain extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setForeground(new Color(255, 255, 255));
-		contentPane.setBackground(new Color(255, 255, 255));
+		contentPane.setBackground(new Color(42, 34, 71));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -110,8 +110,20 @@ public class ProgramMain extends JFrame {
 			ImageIcon original = new ImageIcon("resources/calendario_example.png");
 			Image imagenEscalada = original.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
 			JLabel lblIcon = new JLabel(new ImageIcon(imagenEscalada));
-			lblIcon.setBounds(495, 200, 274, 295);
+			lblIcon.setBackground(new Color(0, 0, 160));
+			lblIcon.setBounds(565, 193, 250, 276);
 			contentPane.add(lblIcon);
+		} catch (Exception e) {
+			System.err.println("No se pudo cargar la imagen: " + e.getMessage());
+		}
+		
+		try {
+			ImageIcon original2 = new ImageIcon("resources/Myaux Logo.jpg");
+			Image imagenEscalada2 = original2.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
+			JLabel lblIcon2 = new JLabel(new ImageIcon(imagenEscalada2));
+			lblIcon2.setBackground(new Color(0, 0, 160));
+			lblIcon2.setBounds(10, 369, 141, 179);
+			contentPane.add(lblIcon2);
 		} catch (Exception e) {
 			System.err.println("No se pudo cargar la imagen: " + e.getMessage());
 		}
@@ -139,6 +151,8 @@ public class ProgramMain extends JFrame {
 		lblGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGrupo.setBounds(10, 75, 330, 25);
 		panelInfo.add(lblGrupo);
+		
+	
 
 		// ========== BANDEJA DE MENSAJES NO LEÍDOS ==========
 		mostrarBadgeMensajes();
