@@ -83,8 +83,7 @@ public class ProgramMain extends JFrame {
 		RoundedButton btnFaltas = new RoundedButton("⚠️ FALTAS", 20);
 		btnFaltas.setBounds(643, 60, 125, 39);
 		btnFaltas.addActionListener(e -> {
-			Faltas ventanaFaltas = new Faltas(numControl);
-			ventanaFaltas.setVisible(true);
+			// Null
 		});
 		contentPane.add(btnFaltas);
 

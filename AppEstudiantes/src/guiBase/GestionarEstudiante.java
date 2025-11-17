@@ -100,7 +100,6 @@ public class GestionarEstudiante extends JFrame {
 		// Button Actions
 		btnRefrescar.addActionListener(e -> cargarDatosEstudiante());
 		btnEditarCalificaciones.addActionListener(e -> editarCalificaciones());
-		btnEditarFaltas.addActionListener(e -> editarFaltas());
 		
 	}
 
@@ -175,9 +174,4 @@ public class GestionarEstudiante extends JFrame {
 		ventana.setVisible(true);
 	}
 	
-	private void editarFaltas() {
-		GestionarFaltas ventana = new GestionarFaltas(numControl);
-		ventana.setVisible(true);
-	}
-
 }

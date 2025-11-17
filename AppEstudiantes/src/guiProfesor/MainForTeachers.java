@@ -26,35 +26,16 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		btnAgregar.setEnabled(false);
 		btnEliminar.setVisible(false);
 		btnEliminar.setEnabled(false);
-
+		btnEditar.setEnabled(false);
+		btnEditar.setVisible(false);
+		
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
-		btnEditar.addActionListener(e -> editarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
 		agregarBotonAsistencias();
 	}
 
 	// ========= ACCIONES ESPECÍFICAS DEL PROFESOR =========
-
-	@Override
-	protected void editarEstudiante() {
-		int selectedRow = tableEstudiantes.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(this, "Seleccione un estudiante primero.");
-			return;
-		}
-
-		int id = (int) model.getValueAt(selectedRow, 0);
-		String nombre = model.getValueAt(selectedRow, 1).toString();
-		String apellido = model.getValueAt(selectedRow, 2).toString();
-		String email = model.getValueAt(selectedRow, 3).toString();
-		String nombreGrupo = (model.getValueAt(selectedRow, 6) != null) 
-				? model.getValueAt(selectedRow, 6).toString() 
-				: null;
-		int grupoId = (nombreGrupo != null) ? obtenerIdGrupo(nombreGrupo) : -1;
-
-		new EditarEstudiante(this, id, nombre, apellido, email, grupoId).setVisible(true);
-	}
 
 	@Override
 	protected void enviarMensaje() {
@@ -197,4 +178,7 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
+	@Override
+	protected void editarEstudiante() {} // Disabled for teachers
 }
