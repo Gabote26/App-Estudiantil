@@ -28,6 +28,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
 
     protected boolean darkMode = false;
     private RoundedButton btnSettings;
+    protected RoundedButton btnCalificaciones;
 
     // Componentes para el tema
     private JPanel headerPanel;
@@ -225,7 +226,16 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         btnAgregar = new RoundedButton("➕ Agregar Estudiante", 20);
         btnSendMsg = new RoundedButton("📣 Enviar Mensaje", 20);
         btnGestionar = new RoundedButton("📋 Gestionar Estudiante", 20);
-
+        
+        btnCalificaciones = new RoundedButton("📝 Gestionar Calificaciones", 20);
+        btnCalificaciones.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        btnCalificaciones.setBackground(new Color(245, 245, 245));
+        btnCalificaciones.setForeground(new Color(48, 48, 48));
+        btnCalificaciones.setFocusPainted(false);
+        btnCalificaciones.setBorderPainted(false);
+        btnCalificaciones.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCalificaciones.setOpaque(true);
+        
         // Estilo de botones
         styleActionButton(btnGestionar, new Color(245, 245, 245), new Color(230, 230, 230));
         styleActionButton(btnRefrescar, new Color(245, 245, 245), new Color(230, 230, 230));
@@ -233,6 +243,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         styleActionButton(btnEditar, new Color(245, 245, 245), new Color(230, 230, 230));
         styleActionButton(btnEliminar, new Color(245, 245, 245), new Color(230, 230, 230));
         styleActionButton(btnSendMsg, new Color(245, 245, 245), new Color(230, 230, 230));
+        styleActionButton(btnCalificaciones, new Color(245, 245, 245), new Color(230, 230, 230));
 
         actionPanel.add(btnGestionar);
         actionPanel.add(btnRefrescar);
@@ -240,6 +251,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         actionPanel.add(btnEditar);
         actionPanel.add(btnEliminar);
         actionPanel.add(btnSendMsg);
+        actionPanel.add(btnCalificaciones);
 
         btnRefrescar.setBounds(10, 10, 160, 30);
         btnAgregar.setBounds(180, 10, 180, 30);
@@ -247,6 +259,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         btnEliminar.setBounds(540, 10, 180, 30);
         btnSendMsg.setBounds(730, 10, 160, 30);
         btnGestionar.setBounds(900, 10, 180, 30);
+        btnCalificaciones.setBounds(210, 50, 190, 30);
 
         // ======= LISTENERS =======
         cbGrupos.addActionListener(e -> {

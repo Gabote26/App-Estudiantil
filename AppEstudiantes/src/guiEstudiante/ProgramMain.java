@@ -35,6 +35,7 @@ public class ProgramMain extends JFrame {
 
 		// ========== TÍTULO ==========
 		JLabel lblTitulo = new JLabel("Panel del Estudiante");
+		lblTitulo.setForeground(new Color(192, 192, 192));
 		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		lblTitulo.setBounds(350, 10, 250, 30);
 		contentPane.add(lblTitulo);
@@ -55,18 +56,28 @@ public class ProgramMain extends JFrame {
 		});
 		contentPane.add(btnMensajes);
 
-		RoundedButton btnCalificaciones = new RoundedButton("📝 CALIFICACIONES", 20);
-		btnCalificaciones.setBounds(283, 60, 170, 39);
-		btnCalificaciones.addActionListener(e -> {
-			calificacion winCalif = new calificacion();
-			winCalif.setVisible(true);
+		RoundedButton btnVerCalificaciones = new RoundedButton("📝 Mis Calificaciones", 20);
+		btnVerCalificaciones.setBackground(new Color(155, 89, 182));
+		btnVerCalificaciones.setForeground(Color.WHITE);
+		btnVerCalificaciones.setBounds(283, 60, 170, 39);
+		btnVerCalificaciones.addActionListener(e -> {
+		    try {
+		        long nc = Long.parseLong(numControl);
+		        new VerCalificaciones(nc, nombre, apellido).setVisible(true);
+		    } catch (NumberFormatException ex) {
+		        JOptionPane.showMessageDialog(this, 
+		            "Error: Número de control inválido", 
+		            "Error", 
+		            JOptionPane.ERROR_MESSAGE);
+		    }
 		});
-		contentPane.add(btnCalificaciones);
+		contentPane.add(btnVerCalificaciones);
 
 		RoundedButton btnAsistencias = new RoundedButton("📊 Mis Asistencias", 20);
+		btnAsistencias.setText("📊 Verificar Asistencias");
 		btnAsistencias.setBackground(new Color(46, 204, 113));
 		btnAsistencias.setForeground(Color.WHITE);
-		btnAsistencias.setBounds(463, 60, 170, 39);
+		btnAsistencias.setBounds(463, 60, 187, 39);
 		btnAsistencias.addActionListener(e -> {
 			try {
 				long nc = Long.parseLong(numControl);
@@ -80,30 +91,13 @@ public class ProgramMain extends JFrame {
 		});
 		contentPane.add(btnAsistencias);
 
-		RoundedButton btnFaltas = new RoundedButton("⚠️ FALTAS", 20);
-		btnFaltas.setBounds(643, 60, 125, 39);
-		btnFaltas.addActionListener(e -> {
-			// Null
-		});
-		contentPane.add(btnFaltas);
-
 		RoundedButton btnHorarios = new RoundedButton("🗓️ HORARIOS", 20);
-		btnHorarios.setBounds(123, 110, 150, 39);
+		btnHorarios.setBounds(660, 60, 150, 39);
 		btnHorarios.addActionListener(e -> {
 			HorariosEstudiantes ventanaHorarios = new HorariosEstudiantes();
 			ventanaHorarios.setVisible(true);
 		});
 		contentPane.add(btnHorarios);
-
-		RoundedButton btnMateriasReprobadas = new RoundedButton("❌ MATERIAS REPROBADAS", 20);
-		btnMateriasReprobadas.setBounds(283, 110, 210, 39);
-		btnMateriasReprobadas.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, 
-				"Módulo en desarrollo", 
-				"Próximamente", 
-				JOptionPane.INFORMATION_MESSAGE);
-		});
-		contentPane.add(btnMateriasReprobadas);
 
 		// ========== IMAGEN DECORATIVA ==========
 		try {
@@ -122,7 +116,7 @@ public class ProgramMain extends JFrame {
 			Image imagenEscalada2 = original2.getImage().getScaledInstance(274, 295, Image.SCALE_SMOOTH);
 			JLabel lblIcon2 = new JLabel(new ImageIcon(imagenEscalada2));
 			lblIcon2.setBackground(new Color(0, 0, 160));
-			lblIcon2.setBounds(10, 369, 141, 179);
+			lblIcon2.setBounds(190, 369, 141, 179);
 			contentPane.add(lblIcon2);
 		} catch (Exception e) {
 			System.err.println("No se pudo cargar la imagen: " + e.getMessage());

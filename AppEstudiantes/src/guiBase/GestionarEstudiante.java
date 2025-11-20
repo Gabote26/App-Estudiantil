@@ -64,8 +64,8 @@ public class GestionarEstudiante extends JFrame {
 		titleSection.add(lblNumDe);
 
 		// ---------------- TABLA CALIFICACIONES ----------------
-		model = new DefaultTableModel(new Object[] { "calf_lengua", "calf_humanidades", "calf_matematicas",
-				"calf_sociales", "calf_ciencias", "Promedio", "Estado" }, 0);
+		model = new DefaultTableModel(new Object[] { "Materia", "Parcial 1", "Parcial 2", "Parcial 3", 
+				"Promedio", "Estado" }, 0);
 		tablaEstudiante = new JTable(model);
 		tablaEstudiante.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(tablaEstudiante);
@@ -73,13 +73,14 @@ public class GestionarEstudiante extends JFrame {
 		container.add(scrollPane);
 
 		// ---------------- TABLA FALTAS ----------------
-		model2 = new DefaultTableModel(new Object[] { "faltas_lengua", "faltas_humanidades", "faltas_matematicas",
-				"faltas_sociales", "faltas_ciencias", "Estado" }, 0);
+		model2 = new DefaultTableModel(new Object[] { "Materia", "Asistencias", "Faltas", 
+				"Justificantes", "% Asistencia" }, 0);
 		tablaFaltasEstudiante = new JTable(model2);
 		tablaFaltasEstudiante.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPaneFaltas = new JScrollPane(tablaFaltasEstudiante);
 		scrollPaneFaltas.setBounds(43, 255, 1094, 196);
 		container.add(scrollPaneFaltas);
+		
 		cargarDatosEstudiante();
 
 		// ---------------- PANEL DE BOTONES ----------------
@@ -100,78 +101,106 @@ public class GestionarEstudiante extends JFrame {
 		// Button Actions
 		btnRefrescar.addActionListener(e -> cargarDatosEstudiante());
 		btnEditarCalificaciones.addActionListener(e -> editarCalificaciones());
-		
+		btnEditarFaltas.addActionListener(e -> editarFaltas());
 	}
 
 	public void cargarDatosEstudiante() {
-		// Calificaciones
+		// Cargar calificaciones
 		model.setRowCount(0);
-		String queryCalificaciones = "SELECT c.calf_lengua, c.calf_humanidades, c.calf_matematicas, "
-				+ "c.calf_sociales, c.calf_ciencias " + "FROM calificaciones c "
-				+ "JOIN usuarios u ON u.no_control = c.num_control " + "WHERE c.num_control = ?";
+		String queryCalificaciones = """
+			SELECT materia, parcial_1, parcial_2, parcial_3, promedio
+			FROM calificaciones
+			WHERE num_control = ?
+			ORDER BY materia
+			""";
 
-		try (Connection cn = connectionDB.conectar(); PreparedStatement ps = cn.prepareStatement(queryCalificaciones)) {
+		try (Connection cn = connectionDB.conectar(); 
+		     PreparedStatement ps = cn.prepareStatement(queryCalificaciones)) {
 
 			ps.setString(1, numControl);
 
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
-					double lengua = rs.getDouble("calf_lengua");
-					double humanidades = rs.getDouble("calf_humanidades");
-					double matematicas = rs.getDouble("calf_matematicas");
-					double sociales = rs.getDouble("calf_sociales");
-					double ciencias = rs.getDouble("calf_ciencias");
+					String materia = rs.getString("materia");
+					Double p1 = (Double) rs.getObject("parcial_1");
+					Double p2 = (Double) rs.getObject("parcial_2");
+					Double p3 = (Double) rs.getObject("parcial_3");
+					Double promedio = (Double) rs.getObject("promedio");
 
-					double promedio = (lengua + humanidades + matematicas + sociales + ciencias) / 5.0;
-					String estado = (promedio >= 6.0) ? "Aprobado" : "Reprobado";
+					String p1Str = (p1 != null) ? String.format("%.2f", p1) : "-";
+					String p2Str = (p2 != null) ? String.format("%.2f", p2) : "-";
+					String p3Str = (p3 != null) ? String.format("%.2f", p3) : "-";
+					String promedioStr = (promedio != null) ? String.format("%.2f", promedio) : "-";
+					String estado = (promedio != null && promedio >= 6.0) ? "Aprobado" : "Reprobado";
 
-					Object[] filaCalificaciones = { lengua, humanidades, matematicas, sociales, ciencias,
-							String.format("%.2f", promedio), estado };
+					Object[] filaCalificaciones = { materia, p1Str, p2Str, p3Str, promedioStr, estado };
 					model.addRow(filaCalificaciones);
 				}
 			}
 
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(this, "Error al cargar las calificaciones:\n" + e.getMessage(), "Error SQL",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error al cargar las calificaciones:\n" + e.getMessage(), 
+					"Error SQL", JOptionPane.ERROR_MESSAGE);
 		}
 
-		// Faltas
+		// Cargar resumen de asistencias
 		model2.setRowCount(0);
-		String queryFaltas = "SELECT f.faltas_lengua, f.faltas_humanidades, f.faltas_matematicas, "
-				+ "f.faltas_sociales, f.faltas_ciencias " + "FROM faltas f "
-				+ "JOIN usuarios u ON u.no_control = f.num_control " + "WHERE f.num_control = ?";
+		String queryAsistencias = """
+			SELECT 
+				materia,
+				SUM(CASE WHEN estado = 'A' THEN 1 ELSE 0 END) as asistencias,
+				SUM(CASE WHEN estado = 'F' THEN 1 ELSE 0 END) as faltas,
+				SUM(CASE WHEN estado = 'P' THEN 1 ELSE 0 END) as justificantes,
+				COUNT(*) as total
+			FROM asistencias
+			WHERE num_control = ?
+			GROUP BY materia
+			""";
 
-		try (Connection cn = connectionDB.conectar(); PreparedStatement ps = cn.prepareStatement(queryFaltas)) {
+		try (Connection cn = connectionDB.conectar(); 
+		     PreparedStatement ps = cn.prepareStatement(queryAsistencias)) {
 
 			ps.setString(1, numControl);
 
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
-					int lengua = rs.getInt("faltas_lengua");
-					int humanidades = rs.getInt("faltas_humanidades");
-					int matematicas = rs.getInt("faltas_matematicas");
-					int sociales = rs.getInt("faltas_sociales");
-					int ciencias = rs.getInt("faltas_ciencias");
+					String materia = rs.getString("materia");
+					int asistencias = rs.getInt("asistencias");
+					int faltas = rs.getInt("faltas");
+					int justificantes = rs.getInt("justificantes");
+					int total = rs.getInt("total");
 
-					// double promedio = (lengua + humanidades + matematicas + sociales + ciencias)
-					// / 5.0;
-					// String estado = (promedio >= 6.0) ? "Aprobado" : "Reprobado";
+					double porcentaje = total > 0 ? 
+							((double)(asistencias + justificantes) / total) * 100 : 0;
 
-					Object[] filaCalificaciones = { lengua, humanidades, matematicas, sociales, ciencias, "Test" };
-					model2.addRow(filaCalificaciones);
+					Object[] filaAsistencias = { 
+						materia, 
+						asistencias, 
+						faltas, 
+						justificantes, 
+						String.format("%.1f%%", porcentaje) 
+					};
+					model2.addRow(filaAsistencias);
 				}
 			}
 
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(this, "Error al cargar las faltas:\n" + e.getMessage(), "Error SQL",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error al cargar las asistencias:\n" + e.getMessage(), 
+					"Error SQL", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
 	private void editarCalificaciones() {
-		GestionarCalificaciones ventana = new GestionarCalificaciones(numControl);
-		ventana.setVisible(true);
+		JOptionPane.showMessageDialog(this, 
+			"Usa el botón 'Gestionar Calificaciones' desde el panel principal del profesor/admin",
+			"Información",
+			JOptionPane.INFORMATION_MESSAGE);
 	}
 	
+	private void editarFaltas() {
+		JOptionPane.showMessageDialog(this, 
+			"Usa el botón 'Gestionar Asistencias' desde el panel principal del profesor",
+			"Información",
+			JOptionPane.INFORMATION_MESSAGE);
+	}
 }

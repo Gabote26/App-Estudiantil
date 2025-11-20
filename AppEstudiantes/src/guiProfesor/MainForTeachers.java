@@ -4,6 +4,7 @@ import guiBase.BaseMainFrame;
 import guiBase.EditarEstudiante;
 import guiBase.EnviarMensaje;
 import guiBase.GestionarEstudiante;
+import guiBase.GestionarCalificacionesDeGrupo;
 import utils.Recargable;
 
 import javax.swing.*;
@@ -19,6 +20,8 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 
 	public MainForTeachers(String nombre) {
 		super("🎓 Panel del Profesor", "Bienvenido " + nombre);
+		actionPanel.setBounds(20, 480, 1130, 73);
+		tableEstudiantes.setLocation(20, 177);
 		this.nombre = nombre;
 
 		// Ocultar botones no disponibles para profesores
@@ -26,16 +29,37 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		btnAgregar.setEnabled(false);
 		btnEliminar.setVisible(false);
 		btnEliminar.setEnabled(false);
-		btnEditar.setEnabled(false);
-		btnEditar.setVisible(false);
-		
+
+		// Acciones de los botones
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
+		btnEditar.addActionListener(e -> editarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
+		btnCalificaciones.addActionListener(e -> gestionarCalificaciones());
 		agregarBotonAsistencias();
 	}
 
 	// ========= ACCIONES ESPECÍFICAS DEL PROFESOR =========
+
+	@Override
+	protected void editarEstudiante() {
+		int selectedRow = tableEstudiantes.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "Seleccione un estudiante primero.");
+			return;
+		}
+
+		int id = (int) model.getValueAt(selectedRow, 0);
+		String nombre = model.getValueAt(selectedRow, 1).toString();
+		String apellido = model.getValueAt(selectedRow, 2).toString();
+		String email = model.getValueAt(selectedRow, 3).toString();
+		String nombreGrupo = (model.getValueAt(selectedRow, 6) != null) 
+				? model.getValueAt(selectedRow, 6).toString() 
+				: null;
+		int grupoId = (nombreGrupo != null) ? obtenerIdGrupo(nombreGrupo) : -1;
+
+		new EditarEstudiante(this, id, nombre, apellido, email, grupoId).setVisible(true);
+	}
 
 	@Override
 	protected void enviarMensaje() {
@@ -93,6 +117,20 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 			new GestionarEstudiante(noControl, nombre, apellido).setVisible(true);
 	}
 
+	// ========= GESTIÓN DE CALIFICACIONES =========
+
+	private void gestionarCalificaciones() {
+		String materiaAsignada = obtenerMateriaProfesor();
+		int usuarioId = obtenerIdUsuario(this.nombre);
+		
+		if (usuarioId <= 0) {
+			JOptionPane.showMessageDialog(this, "Error al obtener datos del profesor");
+			return;
+		}
+		
+		new GestionarCalificacionesDeGrupo(materiaAsignada, usuarioId).setVisible(true);
+	}
+
 	// ========= GESTIÓN DE ASISTENCIAS =========
 
 	private void agregarBotonAsistencias() {
@@ -109,11 +147,10 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		
 		actionPanel.add(btnAsistencias);
 		
-		// Ajustar las posiciones para evitar sobreposiciones o mal diseño
-		btnRefrescar.setBounds(210, 10, 160, 30);
-		btnEditar.setBounds(380, 10, 160, 30);
-		btnSendMsg.setBounds(550, 10, 160, 30);
-		btnGestionar.setBounds(720, 10, 180, 30);
+		btnRefrescar.setBounds(410, 10, 160, 30);
+		btnEditar.setBounds(580, 10, 160, 30);
+		btnSendMsg.setBounds(750, 10, 160, 30);
+		btnGestionar.setBounds(920, 10, 180, 30);
 	}
 
 	private String obtenerMateriaProfesor() {
@@ -157,11 +194,6 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		return -1;
 	}
 
-	/**
-	 * Actualizar el grupo de un estudiante en la base de datos
-	 * @param idEstudiante ID del estudiante a actualizar
-	 * @param nuevoGrupoId ID del nuevo grupo
-	 */
 	public void actualizarGrupoEstudiante(int idEstudiante, int nuevoGrupoId) {
 		String query = "UPDATE usuarios SET grupo_id = ? WHERE id = ?";
 		try (Connection cn = connectionDB.conectar(); 
@@ -178,7 +210,4 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
-	@Override
-	protected void editarEstudiante() {} // Disabled for teachers
 }

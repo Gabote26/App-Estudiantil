@@ -1,69 +1,77 @@
 package modelos;
 
 public class Calificacion {
-	private String numControl;
-	private double calfLengua;
-	private double calfHumanidades;
-	private double calfMatematicas;
-	private double calfSociales;
-	private double calfCiencias;
+    private int id;
+    private long numControl;
+    private String materia;
+    private Double parcial1;
+    private Double parcial2;
+    private Double parcial3;
+    private Double promedio;
 
-	public Calificacion(String numControl, double calfLengua, double calfHumanidades, double calfMatematicas,
-			double calfSociales, double calfCiencias) {
-		this.numControl = numControl;
-		this.calfLengua = calfLengua;
-		this.calfHumanidades = calfHumanidades;
-		this.calfMatematicas = calfMatematicas;
-		this.calfSociales = calfSociales;
-		this.calfCiencias = calfCiencias;
-	}
+    public Calificacion(int id, long numControl, String materia, 
+                        Double parcial1, Double parcial2, Double parcial3) {
+        this.id = id;
+        this.numControl = numControl;
+        this.materia = materia;
+        this.parcial1 = parcial1;
+        this.parcial2 = parcial2;
+        this.parcial3 = parcial3;
+        calcularPromedio();
+    }
 
-	// Getters y Setters
-	public String getNumControl() {
-		return numControl;
-	}
-
-	public void setNumControl(String numControl) {
-		this.numControl = numControl;
-	}
-
-	public double getCalfLengua() {
-		return calfLengua;
-	}
-
-	public void setCalfLengua(double calfLengua) {
-		this.calfLengua = calfLengua;
-	}
-
-	public double getCalfHumanidades() {
-		return calfHumanidades;
-	}
-
-	public void setCalfHumanidades(double calfHumanidades) {
-		this.calfHumanidades = calfHumanidades;
-	}
-
-	public double getCalfMatematicas() {
-		return calfMatematicas;
-	}
-
-	public void setCalfMatematicas(double calfMatematicas) {
-		this.calfMatematicas = calfMatematicas;
-	}
-
-	public double getCalfSociales() {
-		return calfSociales;
-	}
-
-	public void setCalfSociales(double calfSociales) {
-		this.calfSociales = calfSociales;
-	}
-
-	public double getCalfCiencias() {
-		return calfCiencias;
-	}
-
-	public void setCalfCiencias(double calfCiencias) {
-		this.calfCiencias = calfCiencias;
-	}
+    public Calificacion(long numControl, String materia, 
+                        Double parcial1, Double parcial2, Double parcial3) {
+        this.numControl = numControl;
+        this.materia = materia;
+        this.parcial1 = parcial1;
+        this.parcial2 = parcial2;
+        this.parcial3 = parcial3;
+        calcularPromedio();
+    }
+    
+    private void calcularPromedio() {
+        int count = 0;
+        double sum = 0;
+        
+        if (parcial1 != null) { sum += parcial1; count++; }
+        if (parcial2 != null) { sum += parcial2; count++; }
+        if (parcial3 != null) { sum += parcial3; count++; }
+        
+        this.promedio = count > 0 ? sum / count : 0.0;
+    }
+    
+    // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    
+    public long getNumControl() { return numControl; }
+    public void setNumControl(long numControl) { this.numControl = numControl; }
+    
+    public String getMateria() { return materia; }
+    public void setMateria(String materia) { this.materia = materia; }
+    
+    public Double getParcial1() { return parcial1; }
+    public void setParcial1(Double parcial1) { 
+        this.parcial1 = parcial1; 
+        calcularPromedio();
+    }
+    
+    public Double getParcial2() { return parcial2; }
+    public void setParcial2(Double parcial2) { 
+        this.parcial2 = parcial2; 
+        calcularPromedio();
+    }
+    
+    public Double getParcial3() { return parcial3; }
+    public void setParcial3(Double parcial3) { 
+        this.parcial3 = parcial3; 
+        calcularPromedio();
+    }
+    
+    public Double getPromedio() { return promedio; }
+    
+    public boolean esAprobado() {
+        return promedio != null && promedio >= 6.0;
+    }
 }

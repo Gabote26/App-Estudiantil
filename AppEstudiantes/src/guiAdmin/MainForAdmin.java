@@ -5,6 +5,7 @@ import guiBase.BaseMainFrame;
 import guiBase.EditarEstudiante;
 import guiBase.EnviarMensaje;
 import guiBase.GestionarEstudiante;
+import guiBase.GestionarCalificacionesDeGrupo;
 import utils.Recargable;
 
 import javax.swing.*;
@@ -22,13 +23,14 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 		super("🛠️ Panel de Administrador", "Bienvenido " + nombre);
 		this.nombre = nombre;
 
-		// Asignar listeners a los botones
+		// Acciones de los botones
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
 		btnAgregar.addActionListener(e -> agregarEstudiante());
 		btnEditar.addActionListener(e -> editarEstudiante());
 		btnEliminar.addActionListener(e -> eliminarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
+		btnCalificaciones.addActionListener(e -> gestionarCalificaciones());
 	}
 
 	// ========== ACCIONES ESPECÍFICAS DE ADMINISTRADOR ==========
@@ -130,6 +132,20 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 
 		if (opcion == JOptionPane.YES_OPTION)
 			new GestionarEstudiante(noControl, nombre, apellido).setVisible(true);
+	}
+
+	// ========= GESTIÓN DE CALIFICACIONES =========
+
+	private void gestionarCalificaciones() {
+		int usuarioId = obtenerIdUsuario(this.nombre);
+		
+		if (usuarioId <= 0) {
+			JOptionPane.showMessageDialog(this, "Error al obtener datos del administrador");
+			return;
+		}
+		
+		// El administrador puede calificar cualquier materia (null = todas)
+		new GestionarCalificacionesDeGrupo(null, usuarioId).setVisible(true);
 	}
 
 	// ========= MÉTODO AUXILIAR =========
