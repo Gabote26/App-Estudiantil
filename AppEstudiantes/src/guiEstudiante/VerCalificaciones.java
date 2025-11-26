@@ -41,7 +41,7 @@ public class VerCalificaciones extends JFrame {
         headerPanel.add(lblTitulo);
 
         JLabel lblInfo = new JLabel(nombre + " " + apellido + " - No. Control: " + numControl);
-        lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblInfo.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         lblInfo.setForeground(new Color(200, 200, 200));
         lblInfo.setBounds(30, 50, 500, 20);
         headerPanel.add(lblInfo);
@@ -62,7 +62,7 @@ public class VerCalificaciones extends JFrame {
 
         tableCalificaciones = new JTable(model);
         tableCalificaciones.setRowHeight(35);
-        tableCalificaciones.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tableCalificaciones.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         tableCalificaciones.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tableCalificaciones.getColumnModel().getColumn(4).setCellRenderer(new PromedioRenderer());
         tableCalificaciones.getColumnModel().getColumn(5).setCellRenderer(new EstadoRenderer());
@@ -75,7 +75,7 @@ public class VerCalificaciones extends JFrame {
 
         JButton btnRefrescar = new JButton("🔄 Actualizar");
         btnRefrescar.setBounds(320, 470, 140, 35);
-        btnRefrescar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnRefrescar.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
         btnRefrescar.addActionListener(e -> cargarDatos());
         getContentPane().add(btnRefrescar);
 

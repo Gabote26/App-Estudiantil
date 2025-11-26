@@ -86,7 +86,7 @@ public class BandejaMensajes extends JFrame {
 
         tableMensajes = new JTable(model);
         tableMensajes.setRowHeight(35);
-        tableMensajes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tableMensajes.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 13));
         tableMensajes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableMensajes.getColumnModel().getColumn(0).setMinWidth(0);
         tableMensajes.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -259,7 +259,7 @@ public class BandejaMensajes extends JFrame {
 
             // Asunto
             JLabel lblAsunto = new JLabel("Asunto: " + mensaje.getAsunto());
-            lblAsunto.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            lblAsunto.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
             lblAsunto.setBounds(30, 90, 520, 25);
             getContentPane().add(lblAsunto);
 
@@ -270,7 +270,7 @@ public class BandejaMensajes extends JFrame {
 
             // Contenido del mensaje
             JTextArea txtContenido = new JTextArea(mensaje.getContenido());
-            txtContenido.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtContenido.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 13));
             txtContenido.setLineWrap(true);
             txtContenido.setWrapStyleWord(true);
             txtContenido.setEditable(false);
@@ -282,7 +282,7 @@ public class BandejaMensajes extends JFrame {
             getContentPane().add(scroll);
 
             // Botón para cerrar la ventana
-            JButton btnCerrar = new JButton("Cerrar");
+            JButton btnCerrar = new JButton("🔓 Cerrar");
             btnCerrar.setBounds(240, 420, 100, 30);
             btnCerrar.addActionListener(e -> dispose());
             getContentPane().add(btnCerrar);

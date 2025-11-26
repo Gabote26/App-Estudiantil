@@ -46,8 +46,12 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         setTitle(tituloVentana);
         setSize(1350, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // IMPORTANTE: para fade
+        setUndecorated(true);
+
         setLocationRelativeTo(null);
-        setLayout(null);
+        getContentPane().setLayout(null);
         getContentPane().setBackground(new Color(250, 250, 252));
 
         // Se registra la ventana en el ThemeManager para que pueda establecerle algun tema
@@ -73,7 +77,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         lblTitulo.setForeground(Color.WHITE);
         lblTitulo.setBounds(18, 20, 400, 30);
         headerPanel.add(lblTitulo);
-        add(headerPanel);
+        getContentPane().add(headerPanel);
 
         // ======= PANEL DERECHO =======
         headerRight = new JPanel(null);
@@ -95,7 +99,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         });
         
         headerRight.add(btnSettings);
-        add(headerRight);
+        getContentPane().add(headerRight);
 
         // ======= PANEL DE BÚSQUEDA =======
         searchPanel = new JPanel(null);
@@ -126,7 +130,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)
         ));
         searchPanel.add(txtBuscar);
-        add(searchPanel);
+        getContentPane().add(searchPanel);
 
         // ======= TABLA =======
         model = new DefaultTableModel(
@@ -161,7 +165,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         scrollPane = new JScrollPane(tableEstudiantes);
         scrollPane.setBounds(20, 140, 1130, 280);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
-        add(scrollPane);
+        getContentPane().add(scrollPane);
 
         // ======= FILTRO DINÁMICO =======
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
@@ -194,6 +198,18 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
             @Override
             public void changedUpdate(DocumentEvent e) { filtrar(); }
         });
+        
+     // ---------- CERRAR VENTANA ----------
+        JButton closeBtn = new JButton("X");
+        closeBtn.setBounds(1300, 10, 40, 30);
+        closeBtn.setForeground(Color.WHITE);
+        closeBtn.setBackground(new Color(153, 61, 61));
+        closeBtn.setBorder(null);
+        closeBtn.setFocusPainted(false);
+        closeBtn.addActionListener(e -> System.exit(0));
+        headerPanel.add(closeBtn);
+
+        addDragListener(headerPanel);
 
         // ======= PANEL DE GRUPOS =======
         grupoPanel = new JPanel(null);
@@ -212,13 +228,13 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         cbGrupos.setForeground(new Color(45, 45, 45));
         cbGrupos.setBounds(150, 10, 220, 30);
         grupoPanel.add(cbGrupos);
-        add(grupoPanel);
+        getContentPane().add(grupoPanel);
 
         // ======= PANEL DE ACCIONES =======
         actionPanel = new JPanel(null);
         actionPanel.setBounds(20, 480, 1130, 50);
         actionPanel.setBackground(Color.WHITE);
-        add(actionPanel);
+        getContentPane().add(actionPanel);
 
         btnRefrescar = new RoundedButton("🔄 Refrescar Lista", 20);
         btnEliminar = new RoundedButton("🗑️ Eliminar Estudiante", 20);
@@ -272,6 +288,24 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         cargarGrupos();
         cargarEstudiantes();
         aplicarTema();
+    }
+    
+ // Permitir que la ventana pueda cambiarse de posición
+    private void addDragListener(JPanel panel) {
+        final int[] p = new int[2];
+
+        panel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                p[0] = e.getX();
+                p[1] = e.getY();
+            }
+        });
+
+        panel.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                setLocation(getX() + e.getX() - p[0], getY() + e.getY() - p[1]);
+            }
+        });
     }
 
     // =================== MÉTODOS COMUNES ===================

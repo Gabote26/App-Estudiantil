@@ -4,213 +4,207 @@ import db.ConexionMysql;
 import guiAdmin.MainForAdmin;
 import guiEstudiante.ProgramMain;
 import guiProfesor.MainForTeachers;
-import utils.RoundedButton;
+import utils.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.sql.*;
 
 public class LoginSystem extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel container;
-	private JTextField userInput;
-	private JPasswordField passwordInput;
-	private final ConexionMysql connectionDB = new ConexionMysql();
+    private JPanel container;
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			try {
-				LoginSystem frame = new LoginSystem();
-				frame.setVisible(true);
-				frame.setResizable(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
+    private MaterialTextField userField;
+    private MaterialPasswordField passField;
 
+    private final ConexionMysql connectionDB = new ConexionMysql();
 
-	public LoginSystem() {
-		setTitle("Sistema de Inicio de Sesión");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 478, 432);
-		setLocationRelativeTo(null);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                MaterialSplash splash = new MaterialSplash();
+                splash.setVisible(true);
+                Thread.sleep(1200);
+                splash.dispose();
 
-		container = new JPanel();
-		container.setForeground(Color.WHITE);
-		container.setBackground(new Color(42, 34, 71));
-		container.setBorder(new EmptyBorder(5, 5, 5, 5));
-		container.setLayout(null);
-		setContentPane(container);
+                LoginSystem frame = new LoginSystem();
+                frame.setUndecorated(true);
+                frame.setLocationRelativeTo(null);
+                FadeUtils.fadeIn(frame, 300);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-		// Etiquetas
-		JLabel titleLogin = new JLabel("INICIAR SESIÓN");
-		titleLogin.setBounds(138, 59, 174, 23);
-		titleLogin.setFont(new Font("Roboto", Font.BOLD, 23));
-		titleLogin.setForeground(Color.WHITE);
-		container.add(titleLogin);
+    public LoginSystem() {
+        setTitle("Iniciar Sesión");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setSize(480, 460);
+        setLocationRelativeTo(null);
 
-		JLabel loginInformation = new JLabel("Ingresa tu usuario y contraseña para entrar al sistema");
-		loginInformation.setFont(new Font("MS Gothic", Font.ITALIC, 12));
-		loginInformation.setForeground(Color.WHITE);
-		loginInformation.setBounds(52, 92, 360, 23);
-		container.add(loginInformation);
+        try {
+            setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 25, 25));
+        } catch (Exception ex) {
+        	JOptionPane.showMessageDialog(null, "ADVERTENCIA: La forma de la ventana no es compatible: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+        }
 
-		// Placeholders para los inputs
-		String placeholderUser = "Usuario (No. de Control)";
-		String placeholderPassword = "Contraseña";
+        container = new JPanel();
+        container.setBackground(new Color(30, 30, 35));
+        container.setLayout(null);
+        container.setBorder(new EmptyBorder(10, 10, 10, 10));
+        setContentPane(container);
 
-		// Campo usuario
-		userInput = new JTextField(placeholderUser);
-		userInput.setBackground(new Color(218, 242, 245));
-		userInput.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 10));
-		userInput.setForeground(Color.GRAY);
-		userInput.setBounds(125, 140, 198, 23);
-		container.add(userInput);
+        // ---------- TITULO ----------
+        JLabel title = new JLabel("INICIAR SESIÓN");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+        title.setBounds(140, 35, 250, 35);
+        container.add(title);
 
-		userInput.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				if (userInput.getText().equals(placeholderUser)) {
-					userInput.setText("");
-					userInput.setForeground(Color.BLACK);
-				}
-			}
+        JLabel subtitle = new JLabel("Ingresa tu usuario y contraseña");
+        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        subtitle.setForeground(new Color(180, 180, 180));
+        subtitle.setBounds(130, 70, 280, 25);
+        container.add(subtitle);
 
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (userInput.getText().isEmpty()) {
-					userInput.setText(placeholderUser);
-					userInput.setForeground(Color.GRAY);
-				}
-			}
-		});
+        // ---------- ICONOS ----------
+        Icon userIcon = new ImageIcon("resources/icons/user.png");
+        Icon lockIcon = new ImageIcon("resources/icons/lock.png");
+        Icon eyeOn  = new ImageIcon("resources/icons/eye.png");
+        Icon eyeOff = new ImageIcon("resources/icons/eye_off.png");
 
-		// Campo de la contraseña
-		passwordInput = new JPasswordField(placeholderPassword, 20);
-		passwordInput.setBackground(new Color(218, 242, 245));
-		passwordInput.setForeground(Color.GRAY);
-		passwordInput.setBounds(125, 173, 198, 23);
-		passwordInput.setEchoChar((char) 0);
-		container.add(passwordInput);
+        // ---------- CAMPOS ----------
+        userField = new MaterialTextField("Usuario (No. de Control)", userIcon);
+        userField.setBounds(100, 120, 280, 60);
+        container.add(userField);
 
-		char defaultEchoChar = new JPasswordField().getEchoChar();
+        passField = new MaterialPasswordField("Contraseña", lockIcon, eyeOn, eyeOff);
+        passField.setBounds(100, 200, 280, 60);
+        container.add(passField);
 
-		passwordInput.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				String currentText = new String(passwordInput.getPassword());
-				if (currentText.equals(placeholderPassword)) {
-					passwordInput.setText("");
-					passwordInput.setForeground(Color.BLACK);
-					passwordInput.setEchoChar(defaultEchoChar);
-				}
-			}
+        // ---------- BOTÓN LOGIN ----------
+        RoundedButton loginBtn = new RoundedButton("Ingresar", 22);
+        loginBtn.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        loginBtn.setForeground(Color.WHITE);
+        loginBtn.setBackground(new Color(25, 118, 210));
+        loginBtn.setBounds(160, 285, 160, 45);
+        container.add(loginBtn);
 
-			@Override
-			public void focusLost(FocusEvent e) {
-				String currentText = new String(passwordInput.getPassword());
-				if (currentText.isEmpty()) {
-					passwordInput.setText(placeholderPassword);
-					passwordInput.setForeground(Color.GRAY);
-					passwordInput.setEchoChar((char) 0);
-				}
-			}
-		});
+        loginBtn.addActionListener(e -> iniciarSesion());
 
-		// Botón de inicio de sesión
-		JButton loginBtn = new RoundedButton("Iniciar Sesión", 20);
-		loginBtn.setForeground(Color.WHITE);
-		loginBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		loginBtn.setBackground(new Color(173, 19, 74));
-		loginBtn.setBounds(169, 228, 115, 33);
-		container.add(loginBtn);
+        // ---------- CERRAR VENTANA ----------
+        JButton closeBtn = new JButton("X");
+        closeBtn.setBounds(430, 8, 40, 30);
+        closeBtn.setForeground(Color.WHITE);
+        closeBtn.setBackground(new Color(153, 61, 61));
+        closeBtn.setBorder(null);
+        closeBtn.setFocusPainted(false);
+        closeBtn.addActionListener(e -> System.exit(0));
+        container.add(closeBtn);
 
-		loginBtn.addActionListener(e -> iniciarSesion(placeholderUser, placeholderPassword));
+        addDragListener(container);
+    }
 
-		// Botón de recuperación de contraseña (Implementar)
-		RoundedButton changePasswordBtn = new RoundedButton("Recuperar Contraseña", 20);
-		changePasswordBtn.setForeground(Color.WHITE);
-		changePasswordBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		changePasswordBtn.setBackground(new Color(40, 153, 140));
-		changePasswordBtn.setBounds(149, 271, 153, 28);
-		container.add(changePasswordBtn);
+    // Permitir que la ventana pueda cambiarse de posición
+    private void addDragListener(JPanel panel) {
+        final int[] p = new int[2];
 
-		changePasswordBtn.addActionListener(
-				e -> JOptionPane.showMessageDialog(this, "Para resetear la contraseña, contacte al administrador",
-						"Información", JOptionPane.INFORMATION_MESSAGE));
+        panel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                p[0] = e.getX();
+                p[1] = e.getY();
+            }
+        });
 
-		JLabel lblVersion = new JLabel("v1.0.0");
-		lblVersion.setForeground(new Color(238, 238, 238));
-		lblVersion.setBounds(417, 373, 37, 12);
-		container.add(lblVersion);
+        panel.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                setLocation(getX() + e.getX() - p[0], getY() + e.getY() - p[1]);
+            }
+        });
+    }
 
-	}
+    private void iniciarSesion() {
 
-	/**
-	 * Método que maneja el proceso de inicio de sesión.
-	 */
-	private void iniciarSesion(String placeholderUser, String placeholderPassword) {
-		String user = userInput.getText();
-		String password = new String(passwordInput.getPassword());
+        String user = userField.getText();
+        String password = passField.getText();
 
-		// Validacion de campos vacíos o placeholders para evitar inconsistencias
-		if (user.equals(placeholderUser) || password.equals(placeholderPassword) || user.isBlank()
-				|| password.isBlank()) {
-			JOptionPane.showMessageDialog(this, "¡DEBE COMPLETAR TODOS LOS CAMPOS!");
-			return;
-		}
+        if (user.isBlank() || password.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Debe completar todos los campos");
+            return;
+        }
 
-		// Validar conexión con la base de datos
-		Connection cn = connectionDB.conectar();
-		if (cn == null) {
-			JOptionPane.showMessageDialog(this, "No se pudo establecer conexión con la base de datos.",
-					"Error de conexión", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+        MaterialLoader loader = new MaterialLoader(this);
 
-		// Consulta de datos SQL en la base de datos
-		String query = "SELECT nombre, apellido, role, no_control FROM usuarios WHERE email = ? AND password = ?";
+        SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
 
-		try (PreparedStatement ps = cn.prepareStatement(query)) {
-			ps.setString(1, user);
-			ps.setString(2, password);
+            String nombre, apellido, role;
+            long numControl;
 
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					String nombreUsuario = rs.getString("nombre");
-					String apellidoUsuario = rs.getString("apellido");
-					String assignedRole = rs.getString("role");
-					String numControl = rs.getString("no_control");
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                Connection cn = connectionDB.conectar();
+                if (cn == null) return false;
 
-					dispose();
+                String query = """
+                    SELECT nombre, apellido, role, no_control
+                    FROM usuarios
+                    WHERE email = ? AND password = ?
+                """;
 
-					// Abrir ventana correspondiente dependiendo del rol del usuario
-					if ("PROFESOR".equalsIgnoreCase(assignedRole)) {
-						new MainForTeachers(nombreUsuario).setVisible(true); // Ventana del profesor
-					} else if ("ESTUDIANTE".equalsIgnoreCase(assignedRole)) {
-						new ProgramMain(numControl, nombreUsuario, apellidoUsuario).setVisible(true); // Ventana de usuarios
-					} else if ("ADMIN".equalsIgnoreCase(assignedRole)) {
-						new MainForAdmin(nombreUsuario).setVisible(true); // Panel de administrador
-					} else {
-						JOptionPane.showMessageDialog(this, "Rol desconocido: " + assignedRole, "Advertencia",
-								JOptionPane.WARNING_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(this, "¡USUARIO O CONTRASEÑA INCORRECTOS!");
-				}
-			}
+                try (PreparedStatement ps = cn.prepareStatement(query)) {
+                    ps.setString(1, user);
+                    ps.setString(2, password);
 
-		} catch (SQLException err) {
-			JOptionPane.showMessageDialog(this, "ERROR AL INICIAR SESIÓN:\n" + err.getMessage(), "Error SQL",
-					JOptionPane.ERROR_MESSAGE);
-		} finally {
-			try {
-				cn.close();
-			} catch (SQLException ignore) {
-			}
-		}
-	}
-	}
+                    ResultSet rs = ps.executeQuery();
+
+                    if (rs.next()) {
+                        nombre = rs.getString("nombre");
+                        apellido = rs.getString("apellido");
+                        role = rs.getString("role");
+                        numControl = rs.getLong("no_control");
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void done() {
+                loader.dispose();
+
+                boolean ok = false;
+                try { ok = get(); } catch (Exception ignored) {}
+
+                if (!ok) {
+                    JOptionPane.showMessageDialog(LoginSystem.this, "Usuario o contraseña incorrectos");
+                    return;
+                }
+
+                FadeUtils.fadeOut(LoginSystem.this, 300, () -> {
+                    dispose();
+                    JFrame next = switch (role.toUpperCase()) {
+                        case "ADMIN" -> new MainForAdmin(nombre);
+                        case "PROFESOR" -> new MainForTeachers(nombre);
+                        case "ESTUDIANTE" -> new ProgramMain(numControl, nombre, apellido);
+                        default -> null;
+                    };
+
+                    if (next != null) {
+                        next.setUndecorated(true);
+                        next.setLocationRelativeTo(null);
+                        FadeUtils.fadeIn(next, 300);
+                    }
+                });
+            }
+        };
+
+        worker.execute();
+        loader.setVisible(true);
+    }
+}

@@ -1,4 +1,3 @@
-// src/mensajes/MensajesBase.java
 package mensajes;
 
 import java.sql.*;

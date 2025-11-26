@@ -96,7 +96,7 @@ public class Settings extends JFrame {
         gbc_lblIdioma.weightx = 0.4;
         gbc_lblIdioma.gridwidth = 1;
         JLabel lblIdioma = new JLabel("🌐 Idioma:");
-        lblIdioma.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblIdioma.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         configPanel.add(lblIdioma, gbc_lblIdioma);
         
         GridBagConstraints gbc_configIdioma = new GridBagConstraints();
@@ -141,7 +141,7 @@ public class Settings extends JFrame {
         gbc_configNotificaciones.gridx = 0;
         gbc_configNotificaciones.gridy = 6;
         gbc_configNotificaciones.gridwidth = 2;
-        configNotificaciones = new JCheckBox("🔔 Habilitar recordatorios de tareas");
+        configNotificaciones = new JCheckBox("🔔 Habilitar notificaciones");
         configNotificaciones.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         configNotificaciones.setBackground(Color.WHITE);
         configNotificaciones.setSelected(ConfigManager.getNotificaciones());
