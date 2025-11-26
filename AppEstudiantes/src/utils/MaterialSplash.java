@@ -5,7 +5,9 @@ import java.awt.*;
 
 public class MaterialSplash extends JWindow {
 
-    public MaterialSplash() {
+	private static final long serialVersionUID = 1L;
+
+	public MaterialSplash() {
 
         JPanel p = new JPanel();
         p.setBackground(new Color(30, 30, 30));

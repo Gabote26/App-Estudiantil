@@ -1,20 +1,11 @@
 package calificaciones;
 
 import javax.swing.table.DefaultTableModel;
-import java.awt.EventQueue;
 
 import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Color;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import java.awt.event.*;
 
 public class calificacion extends JFrame {
 
@@ -23,19 +14,6 @@ public class calificacion extends JFrame {
 	private JTable table;
 	private JLabel lblNewLabel_1;
 	private Point posicionFija;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					calificacion frame = new calificacion();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public calificacion() {
 		setBackground(new Color(0, 0, 0));

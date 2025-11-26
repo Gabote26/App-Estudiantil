@@ -8,7 +8,8 @@ import java.awt.*;
 
 public class MaterialPasswordField extends MaterialTextField {
 
-    private JPasswordField passField;
+	private static final long serialVersionUID = 1L;
+	private JPasswordField passField;
     private boolean visible = false;
 
     private Icon eyeOn;

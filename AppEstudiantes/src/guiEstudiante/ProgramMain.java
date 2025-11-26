@@ -3,19 +3,13 @@ package guiEstudiante;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-
-import calificaciones.calificacion;
 import db.ConexionMysql;
 import main.Settings;
 import utils.RoundedButton;
 
 import java.awt.*;
 import java.sql.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
 public class ProgramMain extends JFrame {
 
@@ -23,6 +17,7 @@ public class ProgramMain extends JFrame {
 	private JPanel contentPane;
 	private final ConexionMysql connectionDB = new ConexionMysql();
 	private final long numControl;
+	@SuppressWarnings("unused")
 	private final String nombre, apellido;
 
 	public ProgramMain(long numControl, String nombre, String apellido) {

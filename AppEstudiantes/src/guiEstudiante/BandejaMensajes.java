@@ -235,7 +235,10 @@ public class BandejaMensajes extends JFrame {
     // ========== VENTANA PARA MOSTRAR MENSAJE COMPLETO ==========
     
     class VentanaMensaje extends JFrame {
-        public VentanaMensaje(Mensaje mensaje) {
+
+		private static final long serialVersionUID = 1L;
+
+		public VentanaMensaje(Mensaje mensaje) {
             setTitle(mensaje.getAsunto());
             setSize(600, 500);
             setLocationRelativeTo(BandejaMensajes.this);

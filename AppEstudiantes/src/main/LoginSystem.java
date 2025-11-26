@@ -15,7 +15,9 @@ import java.sql.*;
 
 public class LoginSystem extends JFrame {
 
-    private JPanel container;
+	private static final long serialVersionUID = 1L;
+
+	private JPanel container;
 
     private MaterialTextField userField;
     private MaterialPasswordField passField;

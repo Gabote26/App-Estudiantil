@@ -8,7 +8,8 @@ import java.awt.*;
 
 public class MaterialTextField extends JPanel {
 
-    protected JTextField field;
+	private static final long serialVersionUID = 1L;
+	protected JTextField field;
     protected String label;
     protected Icon icon;          // icono visual (en la izquierda)
     protected Icon clickableIcon;

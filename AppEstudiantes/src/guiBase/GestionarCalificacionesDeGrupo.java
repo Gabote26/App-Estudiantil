@@ -21,7 +21,8 @@ public class GestionarCalificacionesDeGrupo extends JFrame {
     private final ConexionMysql connectionDB = new ConexionMysql();
     private final CalificacionesBase califDAO = new CalificacionesBase();
     private final MensajesBase mensajesDAO = new MensajesBase();
-    private final String materiaProfesor;
+    @SuppressWarnings("unused")
+	private final String materiaProfesor;
     private final int remitenteId;
     
     private JComboBox<String> cbGrupo;

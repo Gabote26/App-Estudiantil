@@ -23,14 +23,6 @@ public class HorariosEstudiantes extends JFrame {
 			"resources/3ER-SEMESTRE-MATU/", "resources/3ER-SEMESTRE-VESP/", "resources/5TO-SEMESTRE-MATU/",
 			"resources/5TO-SEMESTRE-VESP/" };
 
-	// -------- MAIN ----------
-	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			HorariosEstudiantes frame = new HorariosEstudiantes();
-			frame.setVisible(true);
-		});
-	}
-
 	public HorariosEstudiantes() {
 
 		setTitle("Consulta de Horarios - Estudiantes");

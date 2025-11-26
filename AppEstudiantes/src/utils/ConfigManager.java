@@ -78,7 +78,8 @@ public class ConfigManager {
     /**
      * Detectar modo oscuro en Windows 10/11
      */
-    private static boolean isWindowsDarkMode() {
+    @SuppressWarnings("deprecation")
+	private static boolean isWindowsDarkMode() {
         try {
             // Lectura del registro de Windows para determinar el tema
             String command = "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme";
@@ -104,7 +105,8 @@ public class ConfigManager {
     /**
      * Detectar modo oscuro en macOS
      */
-    private static boolean isMacOSDarkMode() {
+    @SuppressWarnings("deprecation")
+	private static boolean isMacOSDarkMode() {
         try {
             String command = "defaults read -g AppleInterfaceStyle";
             Process process = Runtime.getRuntime().exec(command);
@@ -123,7 +125,8 @@ public class ConfigManager {
     /**
      * Detectar modo oscuro en Linux
      */
-    private static boolean isLinuxDarkMode() {
+    @SuppressWarnings("deprecation")
+	private static boolean isLinuxDarkMode() {
         try {
             String command = "gsettings get org.gnome.desktop.interface gtk-theme";
             Process process = Runtime.getRuntime().exec(command);

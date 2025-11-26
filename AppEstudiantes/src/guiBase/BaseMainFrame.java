@@ -16,7 +16,9 @@ import java.sql.*;
 
 public abstract class BaseMainFrame extends JFrame implements Recargable {
 
-    protected final ConexionMysql connectionDB = new ConexionMysql();
+	private static final long serialVersionUID = 1L;
+
+	protected final ConexionMysql connectionDB = new ConexionMysql();
 
     protected JTable tableEstudiantes;
     protected DefaultTableModel model;

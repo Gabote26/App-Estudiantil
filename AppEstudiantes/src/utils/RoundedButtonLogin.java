@@ -5,7 +5,8 @@ import java.awt.*;
 
 public class RoundedButtonLogin extends JButton {
 
-    private int arc;
+	private static final long serialVersionUID = 1L;
+	private int arc;
     private int rippleX, rippleY, rippleSize;
     private boolean rippling = false;
 

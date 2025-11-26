@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.*;
 import db.ConexionMysql;
-import guiEstudiante.HorariosEstudiantes;
 import mensajes.MensajesBase;
 import modelos.Mensaje;
 import java.sql.*;

@@ -22,7 +22,8 @@ public class GestionarAsistencias extends JFrame {
     private static final long serialVersionUID = 1L;
     private final ConexionMysql connectionDB = new ConexionMysql();
     private final AsistenciasBase asistenciasDAO = new AsistenciasBase();
-    private final String materiaProfesor;
+    @SuppressWarnings("unused")
+	private final String materiaProfesor;
     
     private JComboBox<String> cbGrupo;
     private JComboBox<String> cbMateria;

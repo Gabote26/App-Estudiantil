@@ -5,7 +5,8 @@ import java.awt.*;
 
 public class MaterialLoader extends JDialog {
 
-    private float angle = 0;
+	private static final long serialVersionUID = 1L;
+	private float angle = 0;
 
     public MaterialLoader(JFrame parent) {
         super(parent, true);
