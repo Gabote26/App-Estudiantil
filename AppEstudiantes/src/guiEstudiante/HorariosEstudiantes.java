@@ -146,34 +146,57 @@ public class HorariosEstudiantes extends JFrame {
 
 		// Horarios 1ro turno vespertino
 		agregar("1°", "ADMRH", "AV", "1_AVADMRH_page-0001.jpg");
-		agregar("1°", "ADMRH", "BV", "1_BMADMRH_page-0001.jpg");
+		agregar("1°", "ADMRH", "BV", "1_BVADMRH_page-0001.jpg");
 		agregar("1°", "ELE", "AV", "1-AVELE_page-0001.jpg");
 		agregar("1°", "MAU", "AV", "1_AVMAU_page-0001.jpg");
+		agregar("1°", "MEC", "AV", "1_AVMEC_page-0001.jpg");
 		agregar("1°", "MEC", "BV", "1_BVMEC_page-0001.jpg");
 		agregar("1°", "PRO", "AV", "1_AVPRO_page-0001.jpg");
 		agregar("1°", "SMEC", "AV", "1-AVSMEC_page-0001.jpg");
 		agregar("1°", "LOG", "AV", "1_AVLOG_page-0001.jpg");
-		
-		// Horarios 3ro turno matutino
-				agregar("1°", "ADMRH", "AM", "1_AMADMRH_page-0001.jpg");
-				agregar("1°", "ADMRH", "BM", "1_BMADMRH_page-0001.jpg");
-				agregar("1°", "ADMRH", "CM", "1-CMADMRH_page-0001.jpg");
-				agregar("1°", "ELE", "AM", "1_AMELE_page-0001.jpg");
-				agregar("1°", "MAU", "AM", "1_AMMAU_page-0001.jpg");
-				agregar("1°", "MEC", "AM", "1_AMMEC_page-0001.jpg");
-				agregar("1°", "PRO", "AM", "1_AMPRO_page-0001.jpg");
-				agregar("1°", "SMEC", "AM", "1_AMSMEC_page-0001.jpg");
-				agregar("1°", "LOG", "AM", "1-AMLOG_page-0001.jpg");
 
-				// Horarios 3ro turno vespertino
-				agregar("1°", "ADMRH", "AV", "1_AVADMRH_page-0001.jpg");
-				agregar("1°", "ADMRH", "BV", "1_BMADMRH_page-0001.jpg");
-				agregar("1°", "ELE", "AV", "1-AVELE_page-0001.jpg");
-				agregar("1°", "MAU", "AV", "1_AVMAU_page-0001.jpg");
-				agregar("1°", "MEC", "BV", "1_BVMEC_page-0001.jpg");
-				agregar("1°", "PRO", "AV", "1_AVPRO_page-0001.jpg");
-				agregar("1°", "SMEC", "AV", "1-AVSMEC_page-0001.jpg");
-				agregar("1°", "LOG", "AV", "1_AVLOG_page-0001.jpg");
+		// Horarios 3ro turno matutino
+		agregar("3°", "ADMRH", "AM", "3_AMADMRH_page-0001.jpg");
+		agregar("3°", "ADMRH", "BM", "3_BMAMDRH_page-0001.jpg");
+		agregar("3°", "ADMRH", "CM", "3_CMADMRH_page-0001.jpg");
+		agregar("3°", "ELE", "AM", "3-AMELE_page-0001.jpg");
+		agregar("3°", "MAU", "AM", "3-AMMAU_page-0001.jpg");
+		agregar("3°", "MEC", "AM", "3_AMMEC_page-0001.jpg");
+		agregar("3°", "PRO", "AM", "3_AMPRO_page-0001.jpg");
+		agregar("3°", "SMEC", "AM", "3_AMSMEC_page-0001.jpg");
+		agregar("3°", "LOG", "AM", "3_AMLOG_page-0001.jpg");
+
+		// Horarios 3ro turno vespertino
+		agregar("3°", "ADMRH", "AV", "3_AVADMRH_page-0001.jpg");
+		agregar("3°", "ADMRH", "BV", "3_BVADMRH_page-0001.jpg");
+		agregar("3°", "ADMRH", "CV", "3-CVADMRH_page-0001.jpg");
+		agregar("3°", "ELE", "AV", "3_AVELE_page-0001.jpg");
+		agregar("3°", "MAU", "AV", "3_AVMAU_page-0001.jpg");
+		agregar("3°", "MEC", "AV", "3-AVMEC_page-0001.jpg");
+		agregar("3°", "PRO", "AV", "3_AVPRO_page-0001.jpg");
+		agregar("3°", "SMEC", "AV", "3_AVSMEC_page-0001.jpg");
+		agregar("3°", "LOG", "AV", "3_AVLOG_page-0001.jpg");
+
+		// Horarios 5to turno matutino
+		agregar("5°", "ADMRH", "AM", "5_AMADMRH_page-0001.jpg");
+		agregar("5°", "ADMRH", "BM", "5_BMADMRH_page-0001.jpg");
+		agregar("5°", "ADMRH", "CM", "5_CMADMRH_page-0001.jpg");
+		agregar("5°", "ELE", "AM", "5_AMELE_page-0001.jpg");
+		agregar("5°", "MAU", "AM", "5_AMMAU_page-0001.jpg");
+		agregar("5°", "MEC", "AM", "5_AMMEC_page-0001.jpg");
+		agregar("5°", "PRO", "AM", "5_AMPRO_page-0001.jpg");
+		agregar("5°", "SMEC", "AM", "5_AMSMEC_page-0001.jpg");
+		agregar("5°", "LOG", "AM", "5_AMLOG_page-0001.jpg");
+
+		// Horarios 5to turno vespertino
+		agregar("5°", "ADMRH", "AV", "5_AVADMHR_page-0001.jpg");
+		agregar("5°", "ADMRH", "BV", "5_BVADMRH_page-0001.jpg");
+		agregar("5°", "ELE", "AV", "5_AVELE_page-0001.jpg");
+		agregar("5°", "MAU", "AV", "5_AVMAU_page-0001.jpg");
+		agregar("5°", "MEC", "AV", "5_AVMEC_page-0001.jpg");
+		agregar("5°", "PRO", "AV", "5_AVPRO_page-0001.jpg");
+		agregar("5°", "SMEC", "AV", "5_AVSMEC_page-0001.jpg");
+		agregar("3°", "LOG", "AV", "3_AVLOG_page-0001.jpg");
 
 	}
 

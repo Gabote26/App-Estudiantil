@@ -20,7 +20,7 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 
 	public MainForTeachers(String nombre) {
 		super("🎓 Panel del Profesor", "Bienvenido " + nombre);
-		actionPanel.setBounds(20, 480, 1130, 73);
+		actionPanel.setBounds(20, 480, 1130, 93);
 		tableEstudiantes.setLocation(20, 177);
 		this.nombre = nombre;
 
