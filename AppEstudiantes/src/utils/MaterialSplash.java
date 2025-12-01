@@ -37,7 +37,7 @@ public class MaterialSplash extends JWindow {
 
         timer.addActionListener(e -> {
             float o = getOpacity() + 0.05f;
-            o = Math.min(1f, o); // clamp
+            o = Math.min(1f, o);
 
             try {
                 setOpacity(o);

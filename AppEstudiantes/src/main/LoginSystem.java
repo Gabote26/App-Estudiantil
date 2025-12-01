@@ -55,12 +55,22 @@ public class LoginSystem extends JFrame {
         	JOptionPane.showMessageDialog(null, "ADVERTENCIA: La forma de la ventana no es compatible: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	        return;
         }
-
+        
         container = new JPanel();
         container.setBackground(new Color(30, 30, 35));
         container.setLayout(null);
         container.setBorder(new EmptyBorder(10, 10, 10, 10));
         setContentPane(container);
+        
+        container.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ENTER"), "enterPresionado");
+        
+        container.getActionMap().put("enterPresionado", new AbstractAction() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		System.out.println("Login ejecutandose...");
+        		iniciarSesion();
+        	}
+        });
 
         // ---------- TITULO ----------
         JLabel title = new JLabel("INICIAR SESIÓN");
@@ -82,7 +92,7 @@ public class LoginSystem extends JFrame {
         Icon eyeOff = new ImageIcon("resources/icons/eye_off.png");
 
         // ---------- CAMPOS ----------
-        userField = new MaterialTextField("Usuario (No. de Control)", userIcon);
+        userField = new MaterialTextField("Correo", userIcon);
         userField.setBounds(100, 120, 280, 60);
         container.add(userField);
 
@@ -102,6 +112,7 @@ public class LoginSystem extends JFrame {
 
         // ---------- CERRAR VENTANA ----------
         JButton closeBtn = new JButton("X");
+        closeBtn.setFont(new Font("Tahoma", Font.BOLD, 10));
         closeBtn.setBounds(430, 8, 40, 30);
         closeBtn.setForeground(Color.WHITE);
         closeBtn.setBackground(new Color(153, 61, 61));
@@ -111,6 +122,12 @@ public class LoginSystem extends JFrame {
         container.add(closeBtn);
 
         addDragListener(container);
+        
+        JLabel lblNewLabel = new JLabel("Myaux v1.0.1");
+        lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD | Font.ITALIC, 12));
+        lblNewLabel.setForeground(new Color(255, 255, 255));
+        lblNewLabel.setBounds(389, 438, 81, 12);
+        container.add(lblNewLabel);
     }
 
     // Permitir que la ventana pueda cambiarse de posición

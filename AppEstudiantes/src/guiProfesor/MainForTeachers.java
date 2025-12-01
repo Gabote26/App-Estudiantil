@@ -20,6 +20,7 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 
 	public MainForTeachers(String nombre) {
 		super("🎓 Panel del Profesor", "Bienvenido " + nombre);
+		btnCalificaciones.setLocation(252, 10);
 		actionPanel.setBounds(20, 480, 1130, 93);
 		tableEstudiantes.setLocation(20, 177);
 		this.nombre = nombre;
@@ -29,10 +30,11 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		btnAgregar.setEnabled(false);
 		btnEliminar.setVisible(false);
 		btnEliminar.setEnabled(false);
-
+		btnEditar.setVisible(false);
+		btnEditar.setEnabled(false);
+		
 		// Acciones de los botones
 		btnRefrescar.addActionListener(e -> cargarEstudiantes());
-		btnEditar.addActionListener(e -> editarEstudiante());
 		btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
 		btnCalificaciones.addActionListener(e -> gestionarCalificaciones());
@@ -137,7 +139,7 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		String materiaAsignada = obtenerMateriaProfesor();
 		
 		utils.RoundedButton btnAsistencias = new utils.RoundedButton("📋 Gestionar Asistencias", 20);
-		btnAsistencias.setBounds(10, 50, 190, 30);
+		btnAsistencias.setBounds(52, 10, 190, 30);
 		btnAsistencias.setBackground(new java.awt.Color(245, 245, 245));
 		btnAsistencias.setForeground(new java.awt.Color(48, 48, 48));
 		btnAsistencias.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 13));
@@ -147,7 +149,7 @@ public class MainForTeachers extends BaseMainFrame implements Recargable {
 		
 		actionPanel.add(btnAsistencias);
 		
-		btnRefrescar.setBounds(410, 10, 160, 30);
+		btnRefrescar.setBounds(580, 10, 160, 30);
 		btnEditar.setBounds(580, 10, 160, 30);
 		btnSendMsg.setBounds(750, 10, 160, 30);
 		btnGestionar.setBounds(920, 10, 180, 30);
