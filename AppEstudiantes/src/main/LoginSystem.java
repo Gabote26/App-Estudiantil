@@ -8,10 +8,13 @@ import utils.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.ColorUIResource;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.*;
+import java.util.Properties;
 
 public class LoginSystem extends JFrame {
 
@@ -27,6 +30,17 @@ public class LoginSystem extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
+
+                // Verificar la sesión actual
+                Properties sesion = SessionManager.cargarSesion();
+
+                // Si hay una sesión existente, abrir la ventana segun el rol
+                if (sesion != null) {
+                    abrirVentanaSegunRol(sesion);
+                    return;
+                }
+
+                // Si no hay sesión exixtente, abrir ventana de inicio de sesión
                 MaterialSplash splash = new MaterialSplash();
                 splash.setVisible(true);
                 Thread.sleep(1200);
@@ -36,17 +50,18 @@ public class LoginSystem extends JFrame {
                 frame.setUndecorated(true);
                 frame.setLocationRelativeTo(null);
                 FadeUtils.fadeIn(frame, 300);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
-    public LoginSystem() {
+	public LoginSystem() {
         setTitle("Iniciar Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
-        setSize(480, 460);
+        setSize(480, 520);
         setLocationRelativeTo(null);
 
         try {
@@ -63,6 +78,7 @@ public class LoginSystem extends JFrame {
         setContentPane(container);
         
         container.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ENTER"), "enterPresionado");
+        container.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "closeWindow");
         
         container.getActionMap().put("enterPresionado", new AbstractAction() {
         	@Override
@@ -71,33 +87,46 @@ public class LoginSystem extends JFrame {
         		iniciarSesion();
         	}
         });
+        
+        container.getActionMap().put("closeWindow", new AbstractAction() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que quieres salir?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        		
+        		if (opcion == JOptionPane.YES_OPTION) {
+        			System.exit(0);
+        		} else if (opcion == JOptionPane.NO_OPTION) {
+        			System.out.println("Cierre cancelado");
+        		}
+        	}
+        });
 
         // ---------- TITULO ----------
         JLabel title = new JLabel("INICIAR SESIÓN");
         title.setFont(new Font("Segoe UI", Font.BOLD, 24));
         title.setForeground(Color.WHITE);
-        title.setBounds(140, 35, 250, 35);
+        title.setBounds(142, 140, 250, 35);
         container.add(title);
 
         JLabel subtitle = new JLabel("Ingresa tu usuario y contraseña");
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         subtitle.setForeground(new Color(180, 180, 180));
-        subtitle.setBounds(130, 70, 280, 25);
+        subtitle.setBounds(132, 175, 280, 25);
         container.add(subtitle);
 
         // ---------- ICONOS ----------
-        Icon userIcon = new ImageIcon("resources/icons/user.png");
-        Icon lockIcon = new ImageIcon("resources/icons/lock.png");
-        Icon eyeOn  = new ImageIcon("resources/icons/eye.png");
-        Icon eyeOff = new ImageIcon("resources/icons/eye_off.png");
+        Icon userIcon = new ImageIcon(getClass().getResource("/icons/user.png"));
+        Icon lockIcon = new ImageIcon(getClass().getResource("/icons/lock.png"));
+        Icon eyeOn  = new ImageIcon(getClass().getResource("/icons/eye.png"));
+        Icon eyeOff = new ImageIcon(getClass().getResource("/icons/eye_off.png"));
 
         // ---------- CAMPOS ----------
         userField = new MaterialTextField("Correo", userIcon);
-        userField.setBounds(100, 120, 280, 60);
+        userField.setBounds(101, 230, 280, 60);
         container.add(userField);
 
         passField = new MaterialPasswordField("Contraseña", lockIcon, eyeOn, eyeOff);
-        passField.setBounds(100, 200, 280, 60);
+        passField.setBounds(101, 310, 280, 60);
         container.add(passField);
 
         // ---------- BOTÓN LOGIN ----------
@@ -105,7 +134,7 @@ public class LoginSystem extends JFrame {
         loginBtn.setFont(new Font("Segoe UI", Font.BOLD, 15));
         loginBtn.setForeground(Color.WHITE);
         loginBtn.setBackground(new Color(25, 118, 210));
-        loginBtn.setBounds(160, 285, 160, 45);
+        loginBtn.setBounds(161, 395, 160, 45);
         container.add(loginBtn);
 
         loginBtn.addActionListener(e -> iniciarSesion());
@@ -123,11 +152,69 @@ public class LoginSystem extends JFrame {
 
         addDragListener(container);
         
-        JLabel lblNewLabel = new JLabel("Myaux v1.0.1");
+        JLabel lblNewLabel = new JLabel("Myaux v1.0.2B");
         lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD | Font.ITALIC, 12));
         lblNewLabel.setForeground(new Color(255, 255, 255));
-        lblNewLabel.setBounds(389, 438, 81, 12);
+        lblNewLabel.setBounds(377, 498, 93, 12);
         container.add(lblNewLabel);
+        
+        try {
+		    // Carga la imagen desde el classpath
+		    java.net.URL imageURL2 = getClass().getResource("/appLogoImg.png");
+
+		    if (imageURL2 == null) {
+		        throw new Exception("No se encontró el recurso appLogoImg.png.");
+		    }
+
+		    ImageIcon imgOriginal = new ImageIcon(imageURL2);
+		    Image imgScaled = imgOriginal.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
+		    JLabel lblAppLogo = new JLabel(new ImageIcon(imgScaled));
+
+		    lblAppLogo.setBackground(new Color(0, 0, 160));
+		    lblAppLogo.setBounds(64, 34, 81, 73);
+		    container.add(lblAppLogo);
+
+		} catch (Exception e) {
+		    System.err.println("No se pudo cargar la imagen: " + e.getMessage());
+		}
+        
+        // Nombre de la aplicación con degradado aplicado sobreescribiendo el componente paintComponent
+        JLabel appTitle = new JLabel("MyauX") {
+        	 @Override
+        	    protected void paintComponent(Graphics g) {
+        	        Graphics2D g2 = (Graphics2D) g.create();
+        	        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+        	                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        	        // Degradado del texto de izquierda a derecha
+        	        GradientPaint gradient = new GradientPaint(
+        	                0, 0, new Color(150, 50, 255), // color inicial
+        	                getWidth(), 0, new Color(84, 7, 169)  // color final
+        	        );
+
+        	        g2.setPaint(gradient);
+        	        g2.setFont(getFont());
+        	        
+        	        FontMetrics fm = g2.getFontMetrics();
+        	        int x = 0;
+        	        int y = fm.getAscent();
+
+        	        g2.drawString(getText(), x, y);
+        	        g2.dispose();
+        	    }
+        };
+        appTitle.setFont(new Font("Segoe UI", Font.BOLD, 46));
+        appTitle.setBounds(155, 36, 166, 71);
+        container.add(appTitle);
+        
+        // Cambiar fondo del JOptionPane
+        UIManager.put("OptionPane.background", new ColorUIResource(35, 35, 55));
+        UIManager.put("Panel.background", new ColorUIResource(35, 35, 55));
+        UIManager.put("OptionPane.messageForeground", Color.WHITE); // Color del texto del mensaje
+        UIManager.put("OptionPane.foreground", Color.WHITE); // Color del texto general del OptionPane
+        // Color del texto de los botones del JOptionPane
+        UIManager.put("Button.background", new ColorUIResource(60, 60, 90));
+        UIManager.put("Button.foreground", Color.BLACK);
     }
 
     // Permitir que la ventana pueda cambiarse de posición
@@ -205,6 +292,9 @@ public class LoginSystem extends JFrame {
                     return;
                 }
 
+                // Guardar la sesión de forma local
+                SessionManager.guardarSesion(user, role, numControl);
+
                 FadeUtils.fadeOut(LoginSystem.this, 300, () -> {
                     dispose();
                     JFrame next = switch (role.toUpperCase()) {
@@ -226,4 +316,38 @@ public class LoginSystem extends JFrame {
         worker.execute();
         loader.setVisible(true);
     }
+    
+    private static void abrirVentanaSegunRol(Properties s) {
+        String role = s.getProperty("role");
+        String email = s.getProperty("email");
+        long numControl = Long.parseLong(s.getProperty("numControl"));
+
+        JFrame next = switch (role.toUpperCase()) {
+            case "ADMIN" -> new MainForAdmin(email);
+            case "PROFESOR" -> new MainForTeachers(email);
+            case "ESTUDIANTE" -> new ProgramMain(numControl, email, "");
+            default -> null;
+        };
+
+        if (next != null) {
+            next.setUndecorated(true);
+            next.setLocationRelativeTo(null);
+            next.setVisible(true);
+        }
+    }
+    
+    public static void cerrarSesion(JFrame ventanaActual) {
+        SessionManager.cerrarSesion();
+        
+        FadeUtils.fadeOut(ventanaActual, 300, () -> {
+            ventanaActual.dispose();
+
+            LoginSystem login = new LoginSystem();
+            login.setUndecorated(true);
+            login.setLocationRelativeTo(null);
+            FadeUtils.fadeIn(login, 300);
+        });
+    }
+
+    
 }

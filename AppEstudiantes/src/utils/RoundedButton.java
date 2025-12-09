@@ -65,31 +65,27 @@ public class RoundedButton extends JButton {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // Suavizado de bordes y texto
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Fondo del botón
-        if (getParent() != null) {
-            g2.setColor(getParent().getBackground());
-            g2.fillRect(0, 0, getWidth(), getHeight());
-        }
+        // Fondo normal del boton
+        g2.setColor(getParent().getBackground());
+        g2.fillRect(0, 0, getWidth(), getHeight());
 
+        // Fondo redondeado del boton
         Color fillColor = hover ? hoverBg : getBackground();
         g2.setColor(fillColor);
-        g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
 
-        // Establcer el texto y el emoji en el boton
+        // Texto del boton
         g2.setFont(getFont());
         g2.setColor(getForeground());
-
         FontMetrics fm = g2.getFontMetrics();
         String text = getText();
         Rectangle textBounds = fm.getStringBounds(text, g2).getBounds();
 
         int textX = (getWidth() - textBounds.width) / 2;
         int textY = (getHeight() - textBounds.height) / 2 + fm.getAscent();
-
         g2.drawString(text, textX, textY);
 
         g2.dispose();

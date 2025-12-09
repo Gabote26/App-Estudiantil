@@ -28,7 +28,7 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 		btnAgregar.addActionListener(e -> agregarEstudiante());
 		btnEditar.addActionListener(e -> editarEstudiante());
 		btnEliminar.addActionListener(e -> eliminarEstudiante());
-		btnGestionar.addActionListener(e -> gestionarEstudiante());
+		//btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
 		btnCalificaciones.addActionListener(e -> gestionarCalificaciones());
 	}

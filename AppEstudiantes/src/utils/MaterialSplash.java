@@ -11,7 +11,7 @@ public class MaterialSplash extends JWindow {
 
         JPanel p = new JPanel();
         p.setBackground(new Color(30, 30, 30));
-        p.add(new JLabel(new ImageIcon("resources/icons/user.png")));
+        p.add(new JLabel(new ImageIcon(getClass().getResource("/icons/user.png"))));
         p.add(new JLabel("<html><font color='white' size='5'>Cargando...</font></html>"));
 
         add(p);
@@ -20,7 +20,6 @@ public class MaterialSplash extends JWindow {
 
         boolean opacitySupported = true;
 
-        // Verificar transparencia segura
         try {
             setOpacity(0f);
         } catch (Exception e) {

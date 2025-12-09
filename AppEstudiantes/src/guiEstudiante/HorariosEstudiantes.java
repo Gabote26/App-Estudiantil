@@ -1,7 +1,6 @@
 package guiEstudiante;
 
 import java.awt.*;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
@@ -19,9 +18,14 @@ public class HorariosEstudiantes extends JFrame {
 	private Map<HorarioKey, String> mapaHorarios;
 
 	// Carpetas de las imagenes de los horarios
-	private final String[] rutasBase = { "resources/1ER-SEMESTRE-MATU/", "resources/1ER-SEMESTRE-VESP/",
-			"resources/3ER-SEMESTRE-MATU/", "resources/3ER-SEMESTRE-VESP/", "resources/5TO-SEMESTRE-MATU/",
-			"resources/5TO-SEMESTRE-VESP/" };
+	private final String[] rutasBase = { 
+		    "/1ER-SEMESTRE-MATU/",
+		    "/1ER-SEMESTRE-VESP/",
+		    "/3ER-SEMESTRE-MATU/",
+		    "/3ER-SEMESTRE-VESP/",
+		    "/5TO-SEMESTRE-MATU/",
+		    "/5TO-SEMESTRE-VESP/"
+		};
 
 	public HorariosEstudiantes() {
 
@@ -219,21 +223,26 @@ public class HorariosEstudiantes extends JFrame {
 	// -------- CARGAR IMAGEN --------
 	private void cargarImagen(String archivo) {
 
-		for (String base : rutasBase) {
-			File f = new File(base + archivo);
+	    for (String base : rutasBase) {
 
-			if (f.exists()) {
-				ImageIcon original = new ImageIcon(f.getAbsolutePath());
+	        // Intentar cargar imagen como recurso del classpath
+	        java.net.URL url = getClass().getResource(base + archivo);
 
-				Image img = original.getImage().getScaledInstance(imagenLabel.getWidth(), imagenLabel.getHeight(),
-						Image.SCALE_SMOOTH);
+	        if (url != null) {
+	            ImageIcon original = new ImageIcon(url);
 
-				imagenLabel.setIcon(new ImageIcon(img));
-				return;
-			}
-		}
+	            Image img = original.getImage().getScaledInstance(
+	                    imagenLabel.getWidth(),
+	                    imagenLabel.getHeight(),
+	                    Image.SCALE_SMOOTH
+	            );
 
-		JOptionPane.showMessageDialog(this, "Imagen no encontrada en las rutas disponibles.");
+	            imagenLabel.setIcon(new ImageIcon(img));
+	            return;
+	        }
+	    }
+
+	    JOptionPane.showMessageDialog(this, "Imagen no encontrada en las rutas disponibles.");
 	}
 
 }

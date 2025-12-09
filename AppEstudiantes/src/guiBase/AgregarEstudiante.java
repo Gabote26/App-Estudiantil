@@ -127,6 +127,11 @@ public class AgregarEstudiante extends JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos.");
             return;
         }
+        
+        if((password.length() < 8)) {
+        	JOptionPane.showMessageDialog(this, "⚠️ Ingresa una contraseña que contenga, como minimo 8 caracteres!");
+            return;
+        }
 
         String query = """
                 INSERT INTO usuarios (nombre, apellido, email, password, role, no_control, grupo_id)

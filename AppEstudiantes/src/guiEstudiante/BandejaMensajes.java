@@ -138,7 +138,7 @@ public class BandejaMensajes extends JFrame {
         for (Mensaje m : mensajesActuales) {
             String tipoDisplay = formatearTipo(m.getTipoMensaje());
             String fechaDisplay = m.getFechaEnvio().format(formatter);
-            String estadoDisplay = "📧 Nuevo"; // Por defecto
+            String estadoDisplay = "📧 Nuevo"; // Por defecto (Hacer que se guarde el estado en los getters y setters para actualizarlo cuando se haya abierto ya un mensaje
 
             model.addRow(new Object[]{
                 m.getId(),

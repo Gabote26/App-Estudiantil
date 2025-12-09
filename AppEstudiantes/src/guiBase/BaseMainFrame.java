@@ -1,10 +1,12 @@
 package guiBase;
 
 import db.ConexionMysql;
+import main.LoginSystem;
 import main.Settings;
 import utils.ConfigManager;
 import utils.Recargable;
 import utils.RoundedButton;
+import utils.SessionManager;
 import utils.ThemeManager;
 
 import javax.swing.*;
@@ -48,8 +50,6 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         setTitle(tituloVentana);
         setSize(1350, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // IMPORTANTE: para fade
         setUndecorated(true);
 
         setLocationRelativeTo(null);
@@ -100,7 +100,17 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
             new Settings();
         });
         
+     // Cerrar Sesión
+     		RoundedButton logOutBtn = new RoundedButton("🔒 Cerrar Sesion", 20);
+     		logOutBtn.setBackground(new Color(247, 79, 79));
+     		logOutBtn.setForeground(Color.WHITE);
+     		logOutBtn.setBounds(25, 400, 132, 39);
+     		logOutBtn.addActionListener(e -> {
+    		    LoginSystem.cerrarSesion(this);
+    		});
+        
         headerRight.add(btnSettings);
+        headerRight.add(logOutBtn);
         getContentPane().add(headerRight);
 
         // ======= PANEL DE BÚSQUEDA =======
@@ -263,7 +273,7 @@ public abstract class BaseMainFrame extends JFrame implements Recargable {
         styleActionButton(btnSendMsg, new Color(245, 245, 245), new Color(230, 230, 230));
         styleActionButton(btnCalificaciones, new Color(245, 245, 245), new Color(230, 230, 230));
 
-        actionPanel.add(btnGestionar);
+        //actionPanel.add(btnGestionar);
         actionPanel.add(btnRefrescar);
         actionPanel.add(btnAgregar);
         actionPanel.add(btnEditar);
