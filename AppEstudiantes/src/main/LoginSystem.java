@@ -77,6 +77,7 @@ public class LoginSystem extends JFrame {
         container.setBorder(new EmptyBorder(10, 10, 10, 10));
         setContentPane(container);
         
+        // Comprobaciones de teclas
         container.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ENTER"), "enterPresionado");
         container.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "closeWindow");
         
@@ -101,7 +102,7 @@ public class LoginSystem extends JFrame {
         	}
         });
 
-        // ---------- TITULO ----------
+        // ------- Título -------
         JLabel title = new JLabel("INICIAR SESIÓN");
         title.setFont(new Font("Segoe UI", Font.BOLD, 24));
         title.setForeground(Color.WHITE);
@@ -114,13 +115,13 @@ public class LoginSystem extends JFrame {
         subtitle.setBounds(132, 175, 280, 25);
         container.add(subtitle);
 
-        // ---------- ICONOS ----------
+        // ------- Íconos -------
         Icon userIcon = new ImageIcon(getClass().getResource("/icons/user.png"));
         Icon lockIcon = new ImageIcon(getClass().getResource("/icons/lock.png"));
         Icon eyeOn  = new ImageIcon(getClass().getResource("/icons/eye.png"));
         Icon eyeOff = new ImageIcon(getClass().getResource("/icons/eye_off.png"));
 
-        // ---------- CAMPOS ----------
+        // ------- Campos / inputs -------
         userField = new MaterialTextField("Correo", userIcon);
         userField.setBounds(101, 230, 280, 60);
         container.add(userField);
@@ -129,7 +130,7 @@ public class LoginSystem extends JFrame {
         passField.setBounds(101, 310, 280, 60);
         container.add(passField);
 
-        // ---------- BOTÓN LOGIN ----------
+        // ------- Boton de inicio de sesion -------
         RoundedButton loginBtn = new RoundedButton("Ingresar", 22);
         loginBtn.setFont(new Font("Segoe UI", Font.BOLD, 15));
         loginBtn.setForeground(Color.WHITE);
@@ -139,7 +140,7 @@ public class LoginSystem extends JFrame {
 
         loginBtn.addActionListener(e -> iniciarSesion());
 
-        // ---------- CERRAR VENTANA ----------
+        // ------- Boton para cerrar la ventana -------
         JButton closeBtn = new JButton("X");
         closeBtn.setFont(new Font("Tahoma", Font.BOLD, 10));
         closeBtn.setBounds(430, 8, 40, 30);
@@ -235,6 +236,7 @@ public class LoginSystem extends JFrame {
         });
     }
 
+    // Iniciar sesion en el sistema
     private void iniciarSesion() {
 
         String user = userField.getText();
@@ -293,7 +295,7 @@ public class LoginSystem extends JFrame {
                 }
 
                 // Guardar la sesión de forma local
-                SessionManager.guardarSesion(user, role, numControl);
+                SessionManager.guardarSesion(user);
 
                 FadeUtils.fadeOut(LoginSystem.this, 300, () -> {
                     dispose();
@@ -317,25 +319,54 @@ public class LoginSystem extends JFrame {
         loader.setVisible(true);
     }
     
+    // Abrir la ventana asignada dependiendo del rol del usuario
     private static void abrirVentanaSegunRol(Properties s) {
-        String role = s.getProperty("role");
         String email = s.getProperty("email");
-        long numControl = Long.parseLong(s.getProperty("numControl"));
 
-        JFrame next = switch (role.toUpperCase()) {
-            case "ADMIN" -> new MainForAdmin(email);
-            case "PROFESOR" -> new MainForTeachers(email);
-            case "ESTUDIANTE" -> new ProgramMain(numControl, email, "");
-            default -> null;
-        };
+        ConexionMysql cn = new ConexionMysql();
+        try (Connection con = cn.conectar()) {
+            if (con == null) return;
 
-        if (next != null) {
-            next.setUndecorated(true);
-            next.setLocationRelativeTo(null);
-            next.setVisible(true);
+            String query = """
+                SELECT nombre, apellido, role, no_control
+                FROM usuarios
+                WHERE email = ?
+            """;
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                // Si no existe el usuario -> cerrar sesión corrupta
+                SessionManager.cerrarSesion();
+                return;
+            }
+
+            String nombre = rs.getString("nombre");
+            String apellido = rs.getString("apellido");
+            String role = rs.getString("role");
+            long numControl = rs.getLong("no_control");
+
+            JFrame next = switch (role.toUpperCase()) {
+                case "ADMIN" -> new MainForAdmin(nombre);
+                case "PROFESOR" -> new MainForTeachers(nombre);
+                case "ESTUDIANTE" -> new ProgramMain(numControl, nombre, apellido);
+                default -> null;
+            };
+
+            if (next != null) {
+                next.setUndecorated(true);
+                next.setLocationRelativeTo(null);
+                next.setVisible(true);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
+    // Método auxiliar para cerrar la sesion
     public static void cerrarSesion(JFrame ventanaActual) {
         SessionManager.cerrarSesion();
         

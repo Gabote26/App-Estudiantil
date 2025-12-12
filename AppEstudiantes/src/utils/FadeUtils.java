@@ -18,13 +18,10 @@ public class FadeUtils {
         }
     }
 
-    // -------------------------------
-    // FADE OUT
-    // -------------------------------
+    // Efecto Fade Out
     public static void fadeOut(JFrame frame, int duration, Runnable afterFade) {
 
         if (!supportsOpacity(frame)) {
-            // Sistema NO soporta opacity → sin fade
             if (afterFade != null) afterFade.run();
             return;
         }
@@ -53,9 +50,7 @@ public class FadeUtils {
         timer.start();
     }
 
-    // -------------------------------
-    // FADE IN
-    // -------------------------------
+    // Efecto Fade In
     public static void fadeIn(JFrame frame, int duration) {
 
         boolean ok = supportsOpacity(frame);
@@ -63,7 +58,7 @@ public class FadeUtils {
         frame.setVisible(true);
 
         if (!ok) {
-            return; // Sistema no soporta opacity → mostrar normal
+            return;
         }
 
         try {

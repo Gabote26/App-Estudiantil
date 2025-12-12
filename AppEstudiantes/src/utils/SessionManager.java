@@ -7,14 +7,13 @@ public class SessionManager {
 
     private static final String SESSION_FILE = "session.properties";
 
-    // Guardar la sesión (Credenciales en el archivo session.properties)
-    public static void guardarSesion(String email, String role, long numControl) {
+    // Guarda SOLO el email y un token aleatorio
+    public static void guardarSesion(String email) {
         try {
             Properties props = new Properties();
             props.setProperty("isLogged", "true");
             props.setProperty("email", email);
-            props.setProperty("role", role);
-            props.setProperty("numControl", String.valueOf(numControl));
+            props.setProperty("token", String.valueOf(System.currentTimeMillis())); // placeholder
 
             FileOutputStream out = new FileOutputStream(SESSION_FILE);
             props.store(out, "User session");
@@ -24,7 +23,6 @@ public class SessionManager {
         }
     }
 
-    // Cargar la sesión exixtente (Si es falso = iniciar sesion, si es true = entrar a la aplicación)
     public static Properties cargarSesion() {
         try {
             File f = new File(SESSION_FILE);
@@ -45,7 +43,6 @@ public class SessionManager {
         return null;
     }
 
-    // Cerrar la sesión actual
     public static void cerrarSesion() {
         try {
             File f = new File(SESSION_FILE);

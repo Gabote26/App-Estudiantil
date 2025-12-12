@@ -40,7 +40,7 @@ public class VerAsistencias extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// ======= HEADER =======
+		// ------- Header -------
 		JPanel headerPanel = new JPanel(null);
 		headerPanel.setBounds(0, 0, 984, 90);
 		headerPanel.setBackground(new Color(52, 73, 94));
@@ -64,14 +64,14 @@ public class VerAsistencias extends JFrame {
 		lblControl.setBounds(650, 55, 300, 25);
 		headerPanel.add(lblControl);
 
-		// ======= PANEL DE ESTADÍSTICAS GENERAL =======
+		// ------- Panel de estadisticas -------
 		panelEstadisticas = new JPanel();
 		panelEstadisticas.setLayout(new GridLayout(1, 4, 15, 0));
 		panelEstadisticas.setBounds(15, 105, 954, 100);
 		panelEstadisticas.setBackground(new Color(250, 250, 252));
 		contentPane.add(panelEstadisticas);
 
-		// ======= PANEL DE FILTROS =======
+		// ------- Panel de filtros -------
 		JPanel filterPanel = new JPanel(null);
 		filterPanel.setBounds(15, 220, 954, 60);
 		filterPanel.setBackground(Color.WHITE);
@@ -110,7 +110,7 @@ public class VerAsistencias extends JFrame {
 		lblEstadisticas.setBounds(560, 15, 380, 30);
 		filterPanel.add(lblEstadisticas);
 
-		// ======= TABLA DE ASISTENCIAS =======
+		// ------- Tabla de asistencias -------
 		String[] columnas = { "Fecha", "Materia", "Estado" };
 		model = new DefaultTableModel(columnas, 0) {
 			@Override

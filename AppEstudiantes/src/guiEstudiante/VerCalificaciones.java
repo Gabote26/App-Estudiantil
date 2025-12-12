@@ -27,7 +27,7 @@ public class VerCalificaciones extends JFrame {
         getContentPane().setLayout(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // ========== HEADER ==========
+        // ------- Header -------
         
         JPanel headerPanel = new JPanel(null);
         headerPanel.setBounds(0, 0, 800, 80);
@@ -46,7 +46,7 @@ public class VerCalificaciones extends JFrame {
         lblInfo.setBounds(30, 50, 500, 20);
         headerPanel.add(lblInfo);
 
-        // ========== TABLA ==========
+        // ------- Tabla -------
 
         model = new DefaultTableModel(
             new Object[]{"Materia", "Parcial 1", "Parcial 2", "Parcial 3", "Promedio", "Estado"},
@@ -70,8 +70,6 @@ public class VerCalificaciones extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tableCalificaciones);
         scrollPane.setBounds(30, 100, 730, 350);
         getContentPane().add(scrollPane);
-
-        // ========== BOTÓN REFRESCAR / ACTUALIZAR ==========
 
         JButton btnRefrescar = new JButton("🔄 Actualizar");
         btnRefrescar.setBounds(320, 470, 140, 35);
@@ -114,7 +112,7 @@ public class VerCalificaciones extends JFrame {
         }
     }
 
-    // PromedioRenderer
+    // Obtener el promedio de forma automatica
     class PromedioRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 
@@ -155,7 +153,7 @@ public class VerCalificaciones extends JFrame {
         }
     }
 
-    // EstadoRenderer
+    // Mostrar el estado actual en que se encuentra la calificacion
     class EstadoRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 

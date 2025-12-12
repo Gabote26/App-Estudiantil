@@ -79,7 +79,7 @@ public class GestionarCalificacionesDeGrupo extends JFrame {
         btnCargar.addActionListener(e -> cargarCalificaciones());
         panelFiltros.add(btnCargar);
 
-        // ========== TABLA DE CALIFICACIONES ==========
+        // ---------- Tabla de estudiantes ------------
 
         model = new DefaultTableModel(
             new Object[]{"No. Control", "Nombre Completo", "Parcial 1", "Parcial 2", "Parcial 3", "Promedio"}, 
@@ -121,8 +121,6 @@ public class GestionarCalificacionesDeGrupo extends JFrame {
         scrollPane.setBounds(20, 120, 940, 430);
         getContentPane().add(scrollPane);
 
-        // ========== INSTRUCCIONES ==========
-        
         JLabel lblInstrucciones = new JLabel(
             "<html><b>Instrucciones:</b> Haz doble clic en las celdas de Parcial 1, 2 o 3 para editar. " +
             "El promedio se calcula automáticamente. Calificaciones: 0-100</html>"
@@ -132,7 +130,7 @@ public class GestionarCalificacionesDeGrupo extends JFrame {
         lblInstrucciones.setForeground(new Color(100, 100, 100));
         getContentPane().add(lblInstrucciones);
 
-        // ========== BOTONES DE ACCIÓN ==========
+        // Botones de acciones
 
         btnGuardar = new RoundedButton("💾 Guardar Calificaciones", 20);
         btnGuardar.setBounds(730, 565, 230, 40);

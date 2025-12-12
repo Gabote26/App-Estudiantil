@@ -17,6 +17,7 @@ public class ConexionMysql {
     private static final String USER = "avnadmin";
     private static final String PASSWORD = "AVNS_X8ZLHz18HP2o0JB2eGv";
 
+    // Conexión a la base de datos
     public Connection conectar() {
         Connection cn = null;
         try {

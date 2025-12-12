@@ -3,6 +3,7 @@ package utils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 
 public class RoundedButton extends JButton {
     private static final long serialVersionUID = 1L;
@@ -14,14 +15,16 @@ public class RoundedButton extends JButton {
     public RoundedButton(String text, int radius) {
         super(text);
         this.radius = radius;
+
         setFocusPainted(false);
         setContentAreaFilled(false);
         setOpaque(false);
+        setBorderPainted(false);
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         setFont(getEmojiCompatibleFont());
         setForeground(new Color(45, 45, 45));
         setBackground(new Color(247, 248, 250));
-        setBorderPainted(false);
-        setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         this.originalBg = getBackground();
         this.hoverBg = deriveHoverColor(originalBg);
@@ -37,20 +40,19 @@ public class RoundedButton extends JButton {
             @Override
             public void mouseExited(MouseEvent e) {
                 hover = false;
-                SwingUtilities.invokeLater(() -> repaint());
+                repaint();
             }
         });
     }
 
-    // Compatibilidad con emojis en distintos sistemas operativos
     private Font getEmojiCompatibleFont() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            return new Font("Segoe UI Emoji", Font.PLAIN, 16); // Windows
+            return new Font("Segoe UI Emoji", Font.PLAIN, 16);
         } else if (os.contains("mac")) {
-            return new Font("Apple Color Emoji", Font.PLAIN, 16);// Mac
+            return new Font("Apple Color Emoji", Font.PLAIN, 16);
         } else {
-            return new Font("Noto Color Emoji", Font.PLAIN, 16); // Otros sistemas
+            return new Font("Noto Color Emoji", Font.PLAIN, 16);
         }
     }
 
@@ -68,16 +70,24 @@ public class RoundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Fondo normal del boton
-        g2.setColor(getParent().getBackground());
-        g2.fillRect(0, 0, getWidth(), getHeight());
+        // Limpiar el área con el fondo del contenedor (no negro)
+        if (getParent() != null) {
+            g2.setColor(getParent().getBackground());
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        }
 
-        // Fondo redondeado del boton
+        // Definir forma redondeada
+        Shape round = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), radius, radius);
+
+        // Aplicar clip para evitar pintura fuera de la forma
+        g2.setClip(round);
+
+        // Color de fondo según hover
         Color fillColor = hover ? hoverBg : getBackground();
         g2.setColor(fillColor);
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+        g2.fill(round);
 
-        // Texto del boton
+        // Texto centrado
         g2.setFont(getFont());
         g2.setColor(getForeground());
         FontMetrics fm = g2.getFontMetrics();

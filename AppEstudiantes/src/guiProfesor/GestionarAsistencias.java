@@ -43,7 +43,7 @@ public class GestionarAsistencias extends JFrame {
         getContentPane().setLayout(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // ========== PANEL SUPERIOR ==========
+        // ------- Panel de filtros -------
         
         JPanel panelFiltros = new JPanel(null);
         panelFiltros.setBounds(20, 20, 840, 100);
@@ -92,7 +92,7 @@ public class GestionarAsistencias extends JFrame {
         btnCargar.addActionListener(e -> cargarAsistencias());
         panelFiltros.add(btnCargar);
 
-        // ========== TABLA DE ASISTENCIAS ==========
+        // ------- Tabla de Asistencias -------
 
         model = new DefaultTableModel(
             new Object[]{"No. Control", "Nombre Completo", "Asistió (A)", "Faltó (F)", "Justificante (P)"}, 
@@ -145,7 +145,7 @@ public class GestionarAsistencias extends JFrame {
         scrollPane.setBounds(20, 140, 840, 400);
         getContentPane().add(scrollPane);
 
-        // ========== BOTONES DE ACCIÓN ==========
+        // ------- Botones de las acciones -------
 
         btnGuardar = new RoundedButton("💾 Guardar Asistencias", 20);
         btnGuardar.setBounds(350, 560, 180, 40);

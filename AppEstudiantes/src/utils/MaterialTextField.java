@@ -11,7 +11,7 @@ public class MaterialTextField extends JPanel {
 	private static final long serialVersionUID = 1L;
 	protected JTextField field;
     protected String label;
-    protected Icon icon;          // icono visual (en la izquierda)
+    protected Icon icon; // icono visual
     protected Icon clickableIcon;
 
     protected Rectangle clickableBounds;

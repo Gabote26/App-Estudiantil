@@ -84,7 +84,7 @@ public class EditarEstudiante extends JFrame {
 		btnGuardar.addActionListener(e -> guardarCambios());
 	}
 
-	// =================== Clase interna para items del comboBox ===================
+	// Cargar cada grupo en el comboBox
 	private static class GrupoItem {
 		int id;
 		String nombre;
@@ -100,7 +100,7 @@ public class EditarEstudiante extends JFrame {
 		}
 	}
 
-	// =================== Cargar grupos ===================
+	// Cargar todos los grupos
 	private void cargarGrupos() {
 		cbGrupo.removeAllItems();
 		String query = "SELECT id, nombre_grupo FROM grupos";
@@ -126,7 +126,7 @@ public class EditarEstudiante extends JFrame {
 		}
 	}
 
-	// =================== Guardar cambios ===================
+	// Guardar los cambios realizados
 	private void guardarCambios() {
 		String nuevoNombre = txtNombre.getText().trim();
 		String nuevoApellido = txtApellido.getText().trim();

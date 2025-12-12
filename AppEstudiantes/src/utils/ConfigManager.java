@@ -18,26 +18,17 @@ public class ConfigManager {
     
     // =================== MÉTODOS DE TEMA ===================
     
-    /**
-     * Guardar el tema seleccionado
-     * @param tema "Claro", "Oscuro" o "Automático"
-     */
+    // Guardar el tema seleccionado
     public static void setTema(String tema) {
         prefs.put(KEY_TEMA, tema);
     }
     
-    /**
-     * Se obtiene el tema configurado por el usuario
-     * @return "Claro", "Oscuro" o "Automático"
-     */
+    // Obtener el tema configurado por el usuario
     public static String getTema() {
         return prefs.get(KEY_TEMA, DEFAULT_TEMA);
     }
     
-    /**
-     * Se comprueba para saber si se debe establecer el modo obscuro
-     * @return true si el tema debe ser oscuro, false si debe ser claro
-     */
+    // Comprobacion para verificar si debe establecerse el modo obscuro
     public static boolean isDarkMode() {
         String tema = getTema();
         
@@ -53,10 +44,7 @@ public class ConfigManager {
         }
     }
     
-    /**
-     * Detecta si el sistema operativo está en modo oscuro, distintas comprobaciones dependiendo del sistema operativo
-     * @return true si el sistema está en modo oscuro
-     */
+    // Deteccion del modo en que este el sistema (Claro / obscuro)
     public static boolean isSystemDarkMode() {
         String os = System.getProperty("os.name").toLowerCase();
         
@@ -75,9 +63,7 @@ public class ConfigManager {
         return false;
     }
     
-    /**
-     * Detectar modo oscuro en Windows 10/11
-     */
+    // Detectar modo obscuro en windows
     @SuppressWarnings("deprecation")
 	private static boolean isWindowsDarkMode() {
         try {
@@ -102,9 +88,7 @@ public class ConfigManager {
         return false;
     }
     
-    /**
-     * Detectar modo oscuro en macOS
-     */
+    // Detectar modo obscuro en macos
     @SuppressWarnings("deprecation")
 	private static boolean isMacOSDarkMode() {
         try {
@@ -122,9 +106,7 @@ public class ConfigManager {
         }
     }
     
-    /**
-     * Detectar modo oscuro en Linux
-     */
+    // Detectar modo obscuro en linux
     @SuppressWarnings("deprecation")
 	private static boolean isLinuxDarkMode() {
         try {
@@ -174,9 +156,7 @@ public class ConfigManager {
         return prefs.getBoolean(KEY_NOTIFICACIONES, DEFAULT_NOTIFICACIONES);
     }
     
-    /**
-     * Resetear toda la configuración a los valores por defecto
-     */
+    // Resetear configuracion a valores por defecto
     public static void resetConfig() {
         setTema(DEFAULT_TEMA);
         setIdioma(DEFAULT_IDIOMA);

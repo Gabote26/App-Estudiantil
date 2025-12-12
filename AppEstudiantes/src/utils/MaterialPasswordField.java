@@ -64,16 +64,19 @@ public class MaterialPasswordField extends MaterialTextField {
         });
     }
 
+    // Cambiar visibilidad
     public void toggleVisibility() {
         visible = !visible;
         passField.setEchoChar(visible ? (char) 0 : '•');
         repaint();
     }
 
+    // Obtener texto
     public String getText() {
         return new String(passField.getPassword());
     }
 
+    // Establecer texto
     public void setText(String t) {
         passField.setText(t);
         repaint();

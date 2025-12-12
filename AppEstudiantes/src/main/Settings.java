@@ -30,14 +30,14 @@ public class Settings extends JFrame {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(Color.WHITE);
         
-        // ======= TÍTULO =======
+        // ------- Título -------
         JLabel lblTitulo = new JLabel("Configuración de la Aplicación");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulo.setBorder(new EmptyBorder(0, 0, 15, 0));
         mainPanel.add(lblTitulo, BorderLayout.NORTH);
         
-        // ======= PANEL DE CONFIGURACIÓN =======
+        // ------- Panel de configuracion -------
         JPanel configPanel = new JPanel(new GridBagLayout());
         configPanel.setBackground(Color.WHITE);
         
@@ -87,7 +87,7 @@ public class Settings extends JFrame {
         JSeparator sep1 = new JSeparator();
         configPanel.add(sep1, gbc_sep1);
         
-        // --- IDIOMA ---
+        // --- Idioma ---
         GridBagConstraints gbc_lblIdioma = new GridBagConstraints();
         gbc_lblIdioma.insets = new Insets(8, 10, 8, 10);
         gbc_lblIdioma.fill = GridBagConstraints.HORIZONTAL;
@@ -134,7 +134,7 @@ public class Settings extends JFrame {
         JSeparator sep2 = new JSeparator();
         configPanel.add(sep2, gbc_sep2);
         
-        // --- NOTIFICACIONES ---
+        // --- Notificaciones ---
         GridBagConstraints gbc_configNotificaciones = new GridBagConstraints();
         gbc_configNotificaciones.insets = new Insets(8, 10, 8, 10);
         gbc_configNotificaciones.fill = GridBagConstraints.HORIZONTAL;
@@ -168,7 +168,7 @@ public class Settings extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
-        // ======= PANEL DE BOTONES =======
+        // ------- Panel de botones -------
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(Color.WHITE);
         
@@ -201,7 +201,7 @@ public class Settings extends JFrame {
         
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
-        // ======= LISTENERS =======
+        // ------- Listeners -------
         
         btnGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -242,12 +242,14 @@ public class Settings extends JFrame {
         setVisible(true);
     }
 
+    // Cargar la configuracion existente
     private void cargarConfiguracion() {
         configTema.setSelectedItem(ConfigManager.getTema());
         configIdioma.setSelectedItem(ConfigManager.getIdioma());
         configNotificaciones.setSelected(ConfigManager.getNotificaciones());
     }
 
+    // Guardar la configuracion ingresada
     private void guardarConfiguracion() {
         String tema = (String) configTema.getSelectedItem();
         String idioma = (String) configIdioma.getSelectedItem();

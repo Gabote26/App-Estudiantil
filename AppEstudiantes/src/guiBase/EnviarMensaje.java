@@ -50,7 +50,7 @@ public class EnviarMensaje extends JFrame {
         contentPane.setLayout(null);
         contentPane.setBackground(Color.WHITE);
 
-        // ========== PARTE IZQUIERDA: FORMULARIO DE CARACTERISTICAS ==========
+        // -------- Formulario de las caracteristicas del mensaje --------
         
         JLabel titleSendMsg = new JLabel("📣 Enviar Mensaje");
         titleSendMsg.setBounds(50, 10, 250, 35);
@@ -171,7 +171,7 @@ public class EnviarMensaje extends JFrame {
         btnEnviar.addActionListener(e -> enviarMensaje());
         contentPane.add(btnEnviar);
 
-        // ========== PARTE DERECHA: VISTA PREVIA DEL MENSAJE ==========
+        // ------------ Vista previa del mensaje -----------
         
         JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setBounds(480, 10, 2, 570);
@@ -218,6 +218,7 @@ public class EnviarMensaje extends JFrame {
         contentPane.add(scrollResultMsg);
     }
 
+    // Cargar los grupos disponibles
     private void cargarGrupos() {
         selectGroups.removeAllItems();
         String sql = "SELECT id, nombre_grupo FROM grupos ORDER BY nombre_grupo";
@@ -235,10 +236,12 @@ public class EnviarMensaje extends JFrame {
         }
     }
 
+    // Cargar a los estudiantes del grupo seleccionado
     private void cargarEstudiantesGrupo() {
         actualizarVistaPrevia();
     }
 
+    // Agregar un grupo entero 
     private void agregarGrupoCompleto() {
         if (selectGroups.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Selecciona un grupo primero");
@@ -281,7 +284,7 @@ public class EnviarMensaje extends JFrame {
             return;
         }
 
-        // Mostrar resultados para selección
+        // Mostrar resultados para la selección
         String[] opciones = new String[ids.size()];
         for (int i = 0; i < ids.size(); i++) {
             opciones[i] = obtenerNombreEstudiante(ids.get(i));
@@ -310,6 +313,7 @@ public class EnviarMensaje extends JFrame {
         }
     }
 
+    // Obtener el nombre del usuario al que se enviara el mensaje
     private String obtenerNombreEstudiante(int id) {
         String sql = "SELECT nombre, apellido, email FROM usuarios WHERE id = ?";
         
@@ -331,6 +335,7 @@ public class EnviarMensaje extends JFrame {
         return "ID: " + id;
     }
 
+    // Actualizar la lista de destinatarios
     private void actualizarListaDestinatarios() {
         modelDestinatarios.clear();
         modelResultDest.clear();
@@ -344,6 +349,7 @@ public class EnviarMensaje extends JFrame {
         actualizarVistaPrevia();
     }
 
+    // Borrar la lista de destinatarios
     private void limpiarDestinatarios() {
         destinatariosSeleccionados.clear();
         modelDestinatarios.clear();
@@ -351,6 +357,7 @@ public class EnviarMensaje extends JFrame {
         actualizarVistaPrevia();
     }
 
+    // Actualizar la vista previa del mensaje
     private void actualizarVistaPrevia() {
         // Tipo de mensaje
         String tipo = selectType.getSelectedItem().toString();
@@ -362,6 +369,7 @@ public class EnviarMensaje extends JFrame {
         resultMsg.setText("Asunto: " + asunto + "\n\n" + contenido);
     }
 
+    // Metodo para enviar el mensaje con todas las caracteristicas
     private void enviarMensaje() {
         // Validaciones para evitar datos sin rellenar
         if (txtAsunto.getText().trim().isEmpty()) {

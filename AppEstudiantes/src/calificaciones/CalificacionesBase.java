@@ -6,9 +6,12 @@ import java.util.List;
 import db.ConexionMysql;
 import modelos.Calificacion;
 
+// Esta clase esta creada para manejar los métodos de obtencion de datos de la base de datos
+
 public class CalificacionesBase {
     private final ConexionMysql conexionDB = new ConexionMysql();
 
+    // Obtener en una lista, las calificaciones que ha tenido el estudiante, las cuales se guardan en la base de datos
     public List<Calificacion> getCalificacionesEstudiante(long numControl) {
         List<Calificacion> lista = new ArrayList<>();
         String sql = """
@@ -42,6 +45,7 @@ public class CalificacionesBase {
         return lista;
     }
     
+    // Obtener la calificacion usando el modelo definido
     public Calificacion getCalificacion(long numControl, String materia) {
         String sql = """
             SELECT id, num_control, materia, parcial_1, parcial_2, parcial_3, promedio
@@ -74,6 +78,7 @@ public class CalificacionesBase {
         return null;
     }
 
+    // Guardar la calificacion mediante una consulta SQL en la base de datos
     public boolean guardarCalificacion(Calificacion cal) {
         String sql = """
             INSERT INTO calificaciones (num_control, materia, parcial_1, parcial_2, parcial_3)
@@ -101,6 +106,7 @@ public class CalificacionesBase {
         }
     }
     
+    // Guardar varias calificaciones a la vez
     public boolean guardarCalificacionesLote(List<Calificacion> calificaciones) {
         String sql = """
             INSERT INTO calificaciones (num_control, materia, parcial_1, parcial_2, parcial_3)
@@ -154,6 +160,7 @@ public class CalificacionesBase {
         }
     }
     
+    // Obtener las calificaciones de un grupo entero
     public List<CalificacionConAlumno> getCalificacionesGrupo(int grupoId, String materia) {
         List<CalificacionConAlumno> lista = new ArrayList<>();
         String sql = """
@@ -199,7 +206,7 @@ public class CalificacionesBase {
         return lista;
     }
     
-    // ========== CLASE AUXILIAR ==========
+    // ----------- Clase Auxiliar para obtener los datos -------------
     
     public static class CalificacionConAlumno {
         public int usuarioId;

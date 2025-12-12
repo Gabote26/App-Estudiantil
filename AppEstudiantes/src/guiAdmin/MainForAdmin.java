@@ -1,18 +1,10 @@
 package guiAdmin;
 
-import guiBase.AgregarEstudiante;
-import guiBase.BaseMainFrame;
-import guiBase.EditarEstudiante;
-import guiBase.EnviarMensaje;
-import guiBase.GestionarEstudiante;
-import guiBase.GestionarCalificacionesDeGrupo;
+import guiBase.*;
 import utils.Recargable;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MainForAdmin extends BaseMainFrame implements Recargable {
 
@@ -28,12 +20,14 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 		btnAgregar.addActionListener(e -> agregarEstudiante());
 		btnEditar.addActionListener(e -> editarEstudiante());
 		btnEliminar.addActionListener(e -> eliminarEstudiante());
-		//btnGestionar.addActionListener(e -> gestionarEstudiante());
 		btnSendMsg.addActionListener(e -> enviarMensaje());
 		btnCalificaciones.addActionListener(e -> gestionarCalificaciones());
+		
+		btnCalificaciones.setEnabled(false);
+		btnCalificaciones.setVisible(false);
 	}
 
-	// ========== ACCIONES ESPECÍFICAS DE ADMINISTRADOR ==========
+	// Acciones que solo puede realizar el administrador
 	
 	@Override
 	protected void eliminarEstudiante() {
@@ -103,39 +97,6 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 		}
 	}
 
-	// ========= GESTIÓN DE ESTUDIANTES =========
-
-	private void gestionarEstudiante() {
-		int selectedRow = tableEstudiantes.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(this, "Seleccione un estudiante primero.");
-			return;
-		}
-
-		String nombre = model.getValueAt(selectedRow, 1).toString();
-		String apellido = model.getValueAt(selectedRow, 2).toString();
-		String email = model.getValueAt(selectedRow, 3).toString();
-		String noControl = model.getValueAt(selectedRow, 5).toString();
-
-		JOptionPane.showMessageDialog(this,
-				"📋 Detalles del Estudiante:\n\n" 
-				+ "Nombre: " + nombre + " " + apellido + "\n" 
-				+ "Email: " + email + "\n" 
-				+ "No. Control: " + noControl,
-				"Información del Estudiante", 
-				JOptionPane.INFORMATION_MESSAGE);
-
-		int opcion = JOptionPane.showConfirmDialog(this, 
-				"¿Deseas ver el historial académico?", 
-				"Gestión Académica",
-				JOptionPane.YES_NO_OPTION);
-
-		if (opcion == JOptionPane.YES_OPTION)
-			new GestionarEstudiante(noControl, nombre, apellido).setVisible(true);
-	}
-
-	// ========= GESTIÓN DE CALIFICACIONES =========
-
 	private void gestionarCalificaciones() {
 		int usuarioId = obtenerIdUsuario(this.nombre);
 		
@@ -148,7 +109,7 @@ public class MainForAdmin extends BaseMainFrame implements Recargable {
 		new GestionarCalificacionesDeGrupo(null, usuarioId).setVisible(true);
 	}
 
-	// ========= MÉTODO AUXILIAR =========
+	// ------------ Método Auxiliar ----------------
 
 	private int obtenerIdUsuario(String nombre) {
 		String sql = "SELECT id FROM usuarios WHERE nombre = ? AND role = 'ADMIN'";

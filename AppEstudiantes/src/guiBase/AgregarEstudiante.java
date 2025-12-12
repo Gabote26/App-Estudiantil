@@ -85,6 +85,7 @@ public class AgregarEstudiante extends JFrame {
         btnGuardar.addActionListener(e -> guardarNuevoEstudiante());
     }
 
+    // Cargar los grupos disponibles
     private void cargarGrupos() {
         String query = "SELECT id, nombre_grupo FROM grupos";
         try (Connection cn = connectionDB.conectar();
@@ -100,6 +101,7 @@ public class AgregarEstudiante extends JFrame {
         }
     }
 
+    // Obtener el id de cada grupo
     private int obtenerIdGrupo(String nombreGrupo) {
         String query = "SELECT id FROM grupos WHERE nombre_grupo = ?";
         try (Connection cn = connectionDB.conectar();
@@ -113,6 +115,7 @@ public class AgregarEstudiante extends JFrame {
         return -1;
     }
 
+    // Guardar el nuevo usuario
     private void guardarNuevoEstudiante() {
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();

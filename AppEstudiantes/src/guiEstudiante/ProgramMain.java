@@ -8,8 +8,6 @@ import main.LoginSystem;
 import main.Settings;
 import utils.RoundedButton;
 
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -22,23 +20,61 @@ public class ProgramMain extends JFrame {
 	private final long numControl;
 	private final String nombre, apellido;
 
-	// Parametros para la animación de ventana
+	// Parámetros para la animación de ventana
 	private boolean maximizado = false;
 	private Rectangle prevBounds;
 	private Timer animTimer;
 
-	// Panel principal
-	private JPanel content;
-
-	// Barra superior
+	// Componentes principales
 	private JPanel topBar;
-
-	// Badge de notificación y botón mensajes
+	private JPanel mainPanel;
+	private JPanel headerRight;
+	private JPanel botonesPanel;
+	private JPanel infoPanel;
+	private JLabel lblWelcome;
+	private JLabel lblLogo;
+	
+	// Botones principales
 	private RoundedButton btnMensajes;
+	private RoundedButton btnCalificaciones;
+	private RoundedButton btnAsistencias;
+	private RoundedButton btnHorarios;
+	
+	// Botones laterales
+	private RoundedButton btnSettings;
+	private RoundedButton btnLogout;
+
+	// Badge de notificación
 	private JLabel badgeMensajes;
 
 	private Integer usuarioIdCache = null;
 	private String grupoCache = null;
+	
+	// Variables para el redimensionamiento
+	private static final int RESIZE_MARGIN = 5;
+	private int resizeDirection = 0;
+	private Point initialClick;
+	
+	// Constantes para direcciones de redimensionamiento
+	private static final int RESIZE_NONE = 0;
+	private static final int RESIZE_N = 1;
+	private static final int RESIZE_S = 2;
+	private static final int RESIZE_W = 4;
+	private static final int RESIZE_E = 8;
+	private static final int RESIZE_NW = RESIZE_N | RESIZE_W;
+	private static final int RESIZE_NE = RESIZE_N | RESIZE_E;
+	private static final int RESIZE_SW = RESIZE_S | RESIZE_W;
+	private static final int RESIZE_SE = RESIZE_S | RESIZE_E;
+	
+	// Constantes para dimensiones
+	private static final int TOP_BAR_HEIGHT = 40;
+	private static final int HEADER_RIGHT_WIDTH = 180;
+	private static final int MARGIN = 20;
+	private static final int BUTTON_HEIGHT = 60;
+	
+	// Imágenes originales
+	private ImageIcon welcomeOriginal;
+	private ImageIcon logoOriginal;
 
 	public ProgramMain(long numControl, String nombre, String apellido) {
 		this.numControl = numControl;
@@ -51,19 +87,58 @@ public class ProgramMain extends JFrame {
 
 		setSize(950, 600);
 		setLocationRelativeTo(null);
+		
+		// Cargar imágenes originales
+		cargarImagenesOriginales();
 
-		initUI(); // Inicializar la interfaz de usuario
-		setupTopbarDrag();
-		iniciarActualizacionAutomatica(); // Actualización del badge de mensajes
+		initComponents();
+		setupListeners();
+		iniciarActualizacionAutomatica();
+		
+		// Ajustar layout inicial
+		SwingUtilities.invokeLater(this::adjustLayout);
+	}
+	
+	private ImageIcon scaleImageProportionally(ImageIcon original, int maxW, int maxH) {
+	    if (original == null) return null;
+
+	    int ow = original.getIconWidth();
+	    int oh = original.getIconHeight();
+
+	    if (ow <= 0 || oh <= 0 || maxW <= 0 || maxH <= 0) return null;
+
+	    double scale = Math.min((double) maxW / ow, (double) maxH / oh);
+
+	    int newW = (int) (ow * scale);
+	    int newH = (int) (oh * scale);
+
+	    Image scaled = original.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    return new ImageIcon(scaled);
+	}
+	
+	private void cargarImagenesOriginales() {
+		try {
+			welcomeOriginal = new ImageIcon(getClass().getResource("/welcome.png"));
+		} catch (Exception e) {
+			welcomeOriginal = null;
+		}
+		
+		try {
+			logoOriginal = new ImageIcon(getClass().getResource("/appLogoImg.png"));
+		} catch (Exception e) {
+			logoOriginal = null;
+		}
 	}
 
-	// Interfaz gráfica
-	private void initUI() {
-
+	// Inicializar los componentes de la aplicación
+	private void initComponents() {
+		getContentPane().setLayout(null);
+		getContentPane().setBackground(new Color(38, 47, 87));
+		
+		// ------- Top Bar -------
 		topBar = new JPanel(new BorderLayout());
 		topBar.setBackground(new Color(28, 36, 70));
-		topBar.setPreferredSize(new Dimension(50, 40));
-
+		
 		JLabel title = new JLabel("  Panel del Estudiante", SwingConstants.LEFT);
 		title.setForeground(Color.WHITE);
 		title.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -82,21 +157,230 @@ public class ProgramMain extends JFrame {
 		btnPanel.add(btnClose);
 
 		topBar.add(btnPanel, BorderLayout.EAST);
+		getContentPane().add(topBar);
+		
+		// ------- Panel Principal -------
+		mainPanel = new JPanel(null);
+		mainPanel.setBackground(new Color(38, 47, 87));
+		getContentPane().add(mainPanel);
+		
+		// ------- Panel de Botones -------
+		botonesPanel = new JPanel(null);
+		botonesPanel.setOpaque(false);
+		mainPanel.add(botonesPanel);
+		
+		// Crear botones principales
+		btnMensajes = crearBoton("📬 Mis Mensajes", new Color(52, 152, 219));
+		btnMensajes.addActionListener(e -> abrirMensajes());
+		
+		btnCalificaciones = crearBoton("📝 Mis Calificaciones", new Color(155, 89, 182));
+		btnCalificaciones.addActionListener(e -> new VerCalificaciones(numControl, nombre, apellido).setVisible(true));
+		
+		btnAsistencias = crearBoton("📊 Mis Asistencias", new Color(46, 204, 113));
+		btnAsistencias.addActionListener(e -> new VerAsistencias(numControl, nombre, apellido).setVisible(true));
+		
+		btnHorarios = crearBoton("🗓️ Horarios", new Color(190, 190, 190));
+		btnHorarios.addActionListener(e -> new HorariosEstudiantes().setVisible(true));
+		
+		botonesPanel.add(btnMensajes);
+		botonesPanel.add(btnCalificaciones);
+		botonesPanel.add(btnAsistencias);
+		botonesPanel.add(btnHorarios);
+		
+		// ------- Panel de informacion del usuario -------
+		infoPanel = new JPanel(null);
+		infoPanel.setOpaque(true);
+		infoPanel.setBackground(new Color(42, 46, 60));
+		
+		TitledBorder tb = new TitledBorder("Información del Estudiante");
+		tb.setTitleColor(Color.WHITE);
+		tb.setTitleFont(new Font("Segoe UI", Font.BOLD, 14));
+		infoPanel.setBorder(tb);
+		
+		JLabel lblNombre = crearLabelInfo("Nombre: " + nombre + " " + apellido);
+		lblNombre.setBounds(15, 25, 300, 25);
+		infoPanel.add(lblNombre);
+		
+		JLabel lblControl = crearLabelInfo("No. Control: " + numControl);
+		lblControl.setBounds(15, 55, 300, 25);
+		infoPanel.add(lblControl);
+		
+		JLabel lblGrupo = crearLabelInfo("Grupo: " + obtenerGrupoEstudiante(numControl));
+		lblGrupo.setBounds(15, 85, 300, 25);
+		infoPanel.add(lblGrupo);
+		
+		mainPanel.add(infoPanel);
+		
+		// ------- Imagenes -------
+		lblWelcome = new JLabel();
+		lblWelcome.setHorizontalAlignment(SwingConstants.CENTER);
+		mainPanel.add(lblWelcome);
+		
+		lblLogo = new JLabel();
+		lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		mainPanel.add(lblLogo);
+		
+		// ------- Panel secundario -------
+		headerRight = new JPanel(null);
+		headerRight.setBackground(new Color(42, 46, 60));
+		
+		btnSettings = new RoundedButton("⚙️ Configuración", 18);
+		btnSettings.setBackground(new Color(60, 65, 78));
+		btnSettings.setForeground(Color.WHITE);
+		btnSettings.setToolTipText("Abrir configuración");
+		btnSettings.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
+		btnSettings.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnSettings.setFocusPainted(false);
+		btnSettings.setBorderPainted(false);
+		btnSettings.setOpaque(false);
+		btnSettings.setContentAreaFilled(false);
+		btnSettings.setBounds(15, 30, 150, 38);
+		btnSettings.addActionListener(e -> new Settings().setVisible(true));
+		
+		btnLogout = new RoundedButton("🔒 Cerrar Sesión", 20);
+		btnLogout.setBackground(new Color(247, 79, 79));
+		btnLogout.setForeground(Color.WHITE);
+		btnLogout.setBounds(25, 400, 132, 39);
+		btnSettings.setFocusPainted(false);
+		btnLogout.setBorderPainted(false);
+		btnLogout.setOpaque(false);
+		btnLogout.setContentAreaFilled(false);
+		btnLogout.addActionListener(e -> LoginSystem.cerrarSesion(this));
+		
+		headerRight.add(btnSettings);
+		headerRight.add(btnLogout);
+		getContentPane().add(headerRight);
+	}
+	
+	private void setupListeners() {
+		// Drag de ventana
+		addDragListener(topBar);
+		
+		// Redimensionamiento
+		setupResizeListeners();
+		
+		// Listener para adaptación responsive
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				adjustLayout();
+			}
+		});
+	}
+	
+	// ------- Ajuste de layout responsivo -------
+	private void adjustLayout() {
+		int frameWidth = getWidth();
+		int frameHeight = getHeight();
+		
+		// ------- Top Bar -------
+		topBar.setBounds(0, 0, frameWidth, TOP_BAR_HEIGHT);
+		
+		// ------- Panel derecho (secundario) -------
+		int headerRightX = frameWidth - HEADER_RIGHT_WIDTH;
+		int headerRightHeight = frameHeight - TOP_BAR_HEIGHT;
+		headerRight.setBounds(headerRightX, TOP_BAR_HEIGHT, HEADER_RIGHT_WIDTH, headerRightHeight);
+		
+		// Reposicionar botón de logout
+		btnLogout.setBounds(25, headerRightHeight - 70, 132, 39);
+		
+		// ------- Panel Principal -------
+		int mainPanelWidth = headerRightX - MARGIN * 2;
+		int mainPanelHeight = headerRightHeight - MARGIN * 2;
+		mainPanel.setBounds(MARGIN, TOP_BAR_HEIGHT + MARGIN, mainPanelWidth, mainPanelHeight);
+		
+		// ------- Panel de Botones -------
+		int buttonWidth = 200;
+		int buttonGap = 15;
+		int totalWidthFor4 = (buttonWidth * 4) + (buttonGap * 3);
+		boolean use2x2 = mainPanelWidth < totalWidthFor4;
+		
+		if (use2x2) {
+			// Distribución 2x2
+			int totalWidth2x2 = (buttonWidth * 2) + buttonGap;
+			int startX = (mainPanelWidth - totalWidth2x2) / 2;
+			int totalHeight2x2 = (BUTTON_HEIGHT * 2) + buttonGap;
+			
+			btnMensajes.setBounds(startX, 10, buttonWidth, BUTTON_HEIGHT);
+			btnCalificaciones.setBounds(startX + buttonWidth + buttonGap, 10, buttonWidth, BUTTON_HEIGHT);
+			btnAsistencias.setBounds(startX, 10 + BUTTON_HEIGHT + buttonGap, buttonWidth, BUTTON_HEIGHT);
+			btnHorarios.setBounds(startX + buttonWidth + buttonGap, 10 + BUTTON_HEIGHT + buttonGap, buttonWidth, BUTTON_HEIGHT);
+			
+			botonesPanel.setBounds(0, 0, mainPanelWidth, totalHeight2x2 + 20);
+		} else {
+			// Distribución 1x4
+			int startX = (mainPanelWidth - totalWidthFor4) / 2;
+			
+			btnMensajes.setBounds(startX, 10, buttonWidth, BUTTON_HEIGHT);
+			btnCalificaciones.setBounds(startX + buttonWidth + buttonGap, 10, buttonWidth, BUTTON_HEIGHT);
+			btnAsistencias.setBounds(startX + (buttonWidth + buttonGap) * 2, 10, buttonWidth, BUTTON_HEIGHT);
+			btnHorarios.setBounds(startX + (buttonWidth + buttonGap) * 3, 10, buttonWidth, BUTTON_HEIGHT);
+			
+			botonesPanel.setBounds(0, 0, mainPanelWidth, BUTTON_HEIGHT + 20);
+		}
+		
+		// ------- Panel de información -------
+		int infoPanelY = botonesPanel.getHeight() + 20;
+		int infoPanelWidth = Math.min(350, mainPanelWidth / 2 - 20);
+		int infoPanelHeight = 140;
+		infoPanel.setBounds(20, infoPanelY, infoPanelWidth, infoPanelHeight);
+		
+		// ------- Imagen de bienvenida -------
+		int welcomeX = infoPanelWidth + 40;
+		int welcomeY = infoPanelY;
+		int welcomeWidth = mainPanelWidth - welcomeX - 20;
+		int welcomeHeight = Math.min(300, mainPanelHeight - infoPanelY - 20);
+		
+		// Escalar imagen welcome proporcional
+		if (welcomeOriginal != null) {
+		    ImageIcon scaled = scaleImageProportionally(
+		        welcomeOriginal,
+		        welcomeWidth,
+		        welcomeHeight
+		    );
 
-		content = new JPanel(new MigLayout("insets 20, gap 20, wrap 2", "[grow,fill][grow,fill]", ""));
-		content.setBackground(new Color(38, 47, 87));
+		    lblWelcome.setIcon(scaled);
 
-		JScrollPane scroll = new JScrollPane(content);
-		scroll.setBorder(null);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		    int centeredX = welcomeX + (welcomeWidth - scaled.getIconWidth()) / 2;
+		    int centeredY = welcomeY + (welcomeHeight - scaled.getIconHeight()) / 2;
+		    
+		    lblWelcome.setBounds(centeredX, centeredY, scaled.getIconWidth(), scaled.getIconHeight());
+		} else {
+		    lblWelcome.setBounds(welcomeX, welcomeY, welcomeWidth, welcomeHeight);
+		}
+		
+		// ------- Logo -------
+		int logoY = infoPanelY + infoPanelHeight + 20;
+		int logoWidth = infoPanelWidth;
+		int logoHeight = Math.min(250, mainPanelHeight - logoY - 20);
 
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(topBar, BorderLayout.NORTH);
-		getContentPane().add(scroll, BorderLayout.CENTER);
+		// Escalar imagen logo proporcional
+		if (logoOriginal != null && logoHeight > 50) {
+		    ImageIcon scaledLogo = scaleImageProportionally(
+		        logoOriginal,
+		        logoWidth,
+		        logoHeight
+		    );
 
-		agregarContenido();
+		    lblLogo.setIcon(scaledLogo);
+
+		    int centeredX = 20 + (logoWidth - scaledLogo.getIconWidth()) / 2;
+
+		    lblLogo.setBounds(
+		        centeredX,
+		        logoY,
+		        scaledLogo.getIconWidth(),
+		        scaledLogo.getIconHeight()
+		    );
+		} else {
+		    lblLogo.setBounds(20, logoY, logoWidth, 0);
+		}
+		
+		revalidate();
+		repaint();
 	}
 
+	// Crear boton del topBar
 	private JButton createTopButton(String txt, ActionListener evt) {
 		JButton b = new JButton(txt);
 		b.setFocusable(false);
@@ -105,132 +389,63 @@ public class ProgramMain extends JFrame {
 		b.setBorder(null);
 		b.setPreferredSize(new Dimension(40, 40));
 		b.addActionListener(evt);
+		b.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		return b;
 	}
 
-	private void agregarContenido() {
+	// Crear boton
+	private RoundedButton crearBoton(String txt, Color bg) {
+	    RoundedButton b = new RoundedButton(txt, 20);
+	    b.setBackground(bg);
+	    b.setForeground(Color.WHITE);
+	    b.setLayout(null);
+	    b.setMinimumSize(new Dimension(150, 50));
+	    b.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	    b.setFocusPainted(false);
+	    b.setOpaque(false);
+	    b.setContentAreaFilled(false);
+	    b.setBorderPainted(false);
 
-		JLabel title = new JLabel("Panel del Estudiante");
-		title.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		title.setForeground(Color.WHITE);
-		content.add(title, "span 2, align center");
-
-		JPanel botones = new JPanel(new MigLayout("wrap 4, gap 15", "[grow]"));
-		botones.setOpaque(false);
-
-		btnMensajes = crearBoton("📬 Mis Mensajes", new Color(52, 152, 219), e -> abrirMensajes());
-		botones.add(btnMensajes);
-
-		botones.add(crearBoton("📝 Mis Calificaciones", new Color(155, 89, 182),
-				e -> new VerCalificaciones(numControl, nombre, apellido).setVisible(true)));
-
-		botones.add(crearBoton("📊 Mis Asistencias", new Color(46, 204, 113),
-				e -> new VerAsistencias(numControl, nombre, apellido).setVisible(true)));
-
-		botones.add(
-				crearBoton("🗓️ Horarios", new Color(190, 190, 190), e -> new HorariosEstudiantes().setVisible(true)));
-
-		content.add(botones, "span 2, growx");
-
-		JPanel info = new JPanel(new MigLayout("insets 15, wrap 1", "[grow,fill]"));
-		info.setOpaque(true);
-		info.setBackground(new Color(42, 46, 60));
-
-		TitledBorder tb = new TitledBorder("Información del Estudiante");
-		tb.setTitleColor(Color.WHITE);
-		info.setBorder(tb);
-
-		info.add(labelInfo("Nombre", nombre + " " + apellido));
-		info.add(labelInfo("No. Control", String.valueOf(numControl)));
-		info.add(labelInfo("Grupo", obtenerGrupoEstudiante(numControl)));
-
-		content.add(info);
-
-		JLabel noticias = new JLabel("Noticias Recientes");
-		noticias.setForeground(Color.WHITE);
-		noticias.setFont(new Font("Segoe UI", Font.BOLD, 22));
-		content.add(noticias, "wrap");
-
-		content.add(new JLabel(escalarImagen("/welcome.png", 350, 300)));
-		content.add(new JLabel(escalarImagen("/appLogoImg.png", 250, 250)));
-
-		RoundedButton btnConf = new RoundedButton("⚙️ Configuración", 20);
-		btnConf.setBackground(new Color(128, 128, 128));
-		btnConf.addActionListener(e -> new Settings().setVisible(true));
-
-		RoundedButton btnLogout = new RoundedButton("🔒 Cerrar Sesión", 20);
-		btnLogout.setBackground(new Color(247, 79, 79));
-		btnLogout.addActionListener(e -> LoginSystem.cerrarSesion(this));
-
-		JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		footer.setOpaque(false);
-		footer.add(btnConf);
-		footer.add(btnLogout);
-
-		content.add(footer, "span 2, growx, align right");
+	    return b;
 	}
 
-	private RoundedButton crearBoton(String txt, Color bg, ActionListener evt) {
-		RoundedButton b = new RoundedButton(txt, 20);
-		b.setBackground(bg);
-		b.setForeground(Color.WHITE);
-		b.addActionListener(evt);
-		b.setLayout(new OverlayLayout(b));
-		b.setMinimumSize(new Dimension(150, 50));
-		b.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-		return b;
-	}
-
-	private JLabel labelInfo(String titulo, String valor) {
-		JLabel lbl = new JLabel(titulo + ": " + valor);
+	private JLabel crearLabelInfo(String texto) {
+		JLabel lbl = new JLabel(texto);
 		lbl.setForeground(Color.WHITE);
-		lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		return lbl;
 	}
 
-	private ImageIcon escalarImagen(String path, int w, int h) {
-		try {
-			ImageIcon ic = new ImageIcon(getClass().getResource(path));
-			Image img = ic.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
-			return new ImageIcon(img);
-		} catch (Exception e) {
-			return new ImageIcon();
-		}
-	}
-
-	// REESCALADO
-	private void setupTopbarDrag() {
-		topBar.addMouseListener(new MouseAdapter() {
-			Point clickPoint = null;
-
-			@Override
+	// ------- Sistema para arrastrar la ventana -------
+	private void addDragListener(JPanel panel) {
+		final Point[] p = new Point[1];
+		
+		panel.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				Component c = topBar.getComponentAt(e.getPoint());
-				if (c == topBar) {
-					clickPoint = e.getLocationOnScreen();
+				Component c = panel.getComponentAt(e.getPoint());
+				if (c == panel || c.getParent() == panel) {
+					p[0] = e.getPoint();
 				}
 			}
-
-			@Override
+			
 			public void mouseReleased(MouseEvent e) {
-				clickPoint = null;
+				p[0] = null;
 			}
 		});
-
-		topBar.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
+		
+		panel.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				Component c = topBar.getComponentAt(e.getPoint());
-				if (c == topBar) {
+				Component c = panel.getComponentAt(e.getPoint());
+				if ((c == panel || c.getParent() == panel) && p[0] != null) {
 					Point now = e.getLocationOnScreen();
 					Point loc = getLocation();
-					setLocation(loc.x + now.x - topBar.getX(), loc.y + now.y - topBar.getY());
+					setLocation(loc.x + now.x - p[0].x - loc.x, loc.y + now.y - p[0].y - loc.y);
 				}
 			}
 		});
 	}
 
+	// ------- Maximizar o restaurar el tamaño de la ventana con animacion -------
 	private void toggleMaximize() {
 		Rectangle target;
 
@@ -270,7 +485,123 @@ public class ProgramMain extends JFrame {
 		animTimer.start();
 	}
 	
-	// ----------- DATOS ------------
+	// ------- Permitir redimensionar la ventana arrastrando bordes -------
+	private void setupResizeListeners() {
+		MouseAdapter resizeAdapter = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				initialClick = e.getPoint();
+				resizeDirection = getResizeDirection(e.getPoint());
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				resizeDirection = RESIZE_NONE;
+				setCursor(Cursor.getDefaultCursor());
+			}
+			
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				updateCursor(e.getPoint());
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (resizeDirection != RESIZE_NONE) {
+					resizeWindow(e.getPoint());
+				}
+			}
+		};
+		
+		addMouseListener(resizeAdapter);
+		addMouseMotionListener(resizeAdapter);
+	}
+	
+	private int getResizeDirection(Point p) {
+		int dir = RESIZE_NONE;
+		
+		if (p.x < RESIZE_MARGIN) dir |= RESIZE_W;
+		else if (p.x > getWidth() - RESIZE_MARGIN) dir |= RESIZE_E;
+		
+		if (p.y < RESIZE_MARGIN) dir |= RESIZE_N;
+		else if (p.y > getHeight() - RESIZE_MARGIN) dir |= RESIZE_S;
+		
+		return dir;
+	}
+	
+	private void updateCursor(Point p) {
+		int dir = getResizeDirection(p);
+		
+		switch (dir) {
+			case RESIZE_N:
+			case RESIZE_S:
+				setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+				break;
+			case RESIZE_W:
+			case RESIZE_E:
+				setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+				break;
+			case RESIZE_NW:
+			case RESIZE_SE:
+				setCursor(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
+				break;
+			case RESIZE_NE:
+			case RESIZE_SW:
+				setCursor(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
+				break;
+			default:
+				setCursor(Cursor.getDefaultCursor());
+				break;
+		}
+	}
+	
+	private void resizeWindow(Point currentPoint) {
+		Rectangle bounds = getBounds();
+		int dx = currentPoint.x - initialClick.x;
+		int dy = currentPoint.y - initialClick.y;
+		
+		int minWidth = 700;
+		int minHeight = 450;
+		
+		// Redimensionar según la dirección
+		if ((resizeDirection & RESIZE_W) != 0) {
+			int newWidth = bounds.width - dx;
+			if (newWidth >= minWidth) {
+				bounds.x += dx;
+				bounds.width = newWidth;
+				initialClick.x = currentPoint.x;
+			}
+		}
+		
+		if ((resizeDirection & RESIZE_E) != 0) {
+			int newWidth = bounds.width + dx;
+			if (newWidth >= minWidth) {
+				bounds.width = newWidth;
+				initialClick.x = currentPoint.x;
+			}
+		}
+		
+		if ((resizeDirection & RESIZE_N) != 0) {
+			int newHeight = bounds.height - dy;
+			if (newHeight >= minHeight) {
+				bounds.y += dy;
+				bounds.height = newHeight;
+				initialClick.y = currentPoint.y;
+			}
+		}
+		
+		if ((resizeDirection & RESIZE_S) != 0) {
+			int newHeight = bounds.height + dy;
+			if (newHeight >= minHeight) {
+				bounds.height = newHeight;
+				initialClick.y = currentPoint.y;
+			}
+		}
+		
+		setBounds(bounds);
+	}
+
+	// ----------- Datos de usuario ------------
 
 	private int obtenerIdUsuario(long control) {
 		if (usuarioIdCache != null)
@@ -355,6 +686,7 @@ public class ProgramMain extends JFrame {
 
 	private void iniciarActualizacionAutomatica() {
 		badgeMensajes = crearBadge();
+		btnMensajes.setLayout(new OverlayLayout(btnMensajes));
 		btnMensajes.add(badgeMensajes);
 
 		new Timer(5000, e -> actualizarBadgeBackground()).start();
@@ -362,6 +694,7 @@ public class ProgramMain extends JFrame {
 		actualizarBadgeBackground();
 	}
 
+	// Crear el badge de notificaciones
 	private JLabel crearBadge() {
 		JLabel b = new JLabel("0", SwingConstants.CENTER);
 
@@ -370,8 +703,9 @@ public class ProgramMain extends JFrame {
 		b.setForeground(Color.WHITE);
 		b.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		b.setPreferredSize(new Dimension(20, 20));
+		b.setMaximumSize(new Dimension(20, 20));
 
-		// Aineado arriba a la derecha
+		// Alineado arriba a la derecha
 		b.setAlignmentX(1.0f);
 		b.setAlignmentY(0.0f);
 
@@ -380,6 +714,7 @@ public class ProgramMain extends JFrame {
 		return b;
 	}
 
+	// Actualizar el fondo de badge
 	private void actualizarBadgeBackground() {
 		SwingWorker<Integer, Void> worker = new SwingWorker<>() {
 
@@ -400,6 +735,7 @@ public class ProgramMain extends JFrame {
 		worker.execute();
 	}
 
+	// Actualizar elemento visual del badge para coincidir con el numero de mensajes sin leer
 	private void actualizarBadgeVisual(int unread) {
 		if (unread <= 0) {
 			badgeMensajes.setVisible(false);

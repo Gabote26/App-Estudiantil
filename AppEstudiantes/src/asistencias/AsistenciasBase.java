@@ -10,6 +10,7 @@ import modelos.Asistencia;
 public class AsistenciasBase {
     private final ConexionMysql conexionDB = new ConexionMysql();
     
+    // Registrar la asistencia mediante una consulta SQL
     public boolean registrarAsistencia(Asistencia asistencia) {
         String sql = """
             INSERT INTO asistencias (num_control, materia, fecha, estado)
@@ -33,6 +34,7 @@ public class AsistenciasBase {
         }
     }
     
+    // Registrar varias asistencias a la vez
     public boolean registrarAsistenciasLote(List<Asistencia> asistencias) {
         String sql = """
             INSERT INTO asistencias (num_control, materia, fecha, estado)
@@ -82,6 +84,7 @@ public class AsistenciasBase {
         }
     }
     
+    // Se obtiene la lista de asistencias de un grupo completo
     public List<AsistenciaConAlumno> obtenerAsistenciasGrupo(int grupoId, String materia, LocalDate fecha) {
         List<AsistenciaConAlumno> lista = new ArrayList<>();
         String sql = """
@@ -125,6 +128,7 @@ public class AsistenciasBase {
         return lista;
     }
     
+    // Se hace un contador con una consulta SQL al numero de faltas que tiene el alumno
     public int contarFaltas(long numControl, String materia) {
         String sql = """
             SELECT COUNT(*) as total
@@ -150,6 +154,7 @@ public class AsistenciasBase {
         return 0;
     }
 
+    // Definir el estado de la asistencia
     public List<ResumenAsistencia> obtenerResumenAlumno(long numControl) {
         List<ResumenAsistencia> resumen = new ArrayList<>();
         String sql = """
@@ -188,6 +193,7 @@ public class AsistenciasBase {
         return resumen;
     }
     
+    // Se obtiene el historial de las asistencias(Asistencias totales) del alumno
     public List<Asistencia> obtenerHistorialAsistencias(long numControl, String materia, 
                                                          LocalDate fechaInicio, LocalDate fechaFin) {
         List<Asistencia> lista = new ArrayList<>();
@@ -224,6 +230,7 @@ public class AsistenciasBase {
         return lista;
     }
     
+    // Eliminar una asistencia
     public boolean eliminarAsistencia(int id) {
         String sql = "DELETE FROM asistencias WHERE id = ?";
         
@@ -239,7 +246,7 @@ public class AsistenciasBase {
         }
     }
     
-    // ========== CLASES AUXILIARES ==========
+    // ------------- Clase Auxiliar para métodos base ---------------
     
     public static class AsistenciaConAlumno {
         public int usuarioId;

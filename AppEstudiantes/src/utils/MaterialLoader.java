@@ -3,6 +3,8 @@ package utils;
 import javax.swing.*;
 import java.awt.*;
 
+// Loader animado / spinner giratorio
+
 public class MaterialLoader extends JDialog {
 
 	private static final long serialVersionUID = 1L;

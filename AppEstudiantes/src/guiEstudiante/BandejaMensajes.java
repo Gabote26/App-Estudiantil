@@ -29,7 +29,7 @@ public class BandejaMensajes extends JFrame {
         getContentPane().setLayout(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // ========== HEADER ==========
+        // -------- Header ---------
         
         JPanel headerPanel = new JPanel(null);
         headerPanel.setBounds(0, 0, 900, 80);
@@ -54,7 +54,7 @@ public class BandejaMensajes extends JFrame {
         btnRefrescar.addActionListener(e -> cargarMensajes());
         headerPanel.add(btnRefrescar);
 
-        // ========== FILTROS ==========
+        // ------- Filtros --------
         
         JPanel panelFiltros = new JPanel(null);
         panelFiltros.setBounds(20, 100, 840, 50);
@@ -72,7 +72,7 @@ public class BandejaMensajes extends JFrame {
         cbFiltro.addActionListener(e -> aplicarFiltro(cbFiltro.getSelectedItem().toString()));
         panelFiltros.add(cbFiltro);
 
-        // ========== TABLA DE MENSAJES ==========
+        // ------- Tabla con todos los mensajes disponibles --------
 
         model = new DefaultTableModel(
             new Object[]{"ID", "Tipo", "Asunto", "Fecha", "Estado"}, 
@@ -106,8 +106,7 @@ public class BandejaMensajes extends JFrame {
         scrollPane.setBounds(20, 170, 840, 330);
         getContentPane().add(scrollPane);
 
-        // ========== BOTONES ==========
-
+        // Abrir el mensaje seleccionado
         JButton btnAbrir = new JButton("📖 Abrir Mensaje");
         btnAbrir.setBounds(350, 520, 180, 35);
         btnAbrir.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
@@ -120,6 +119,7 @@ public class BandejaMensajes extends JFrame {
         cargarMensajes();
     }
 
+    // Cargar todos los mensajes disponibles a los que tiene acceso un usuario
     private void cargarMensajes() {
         model.setRowCount(0);
         mensajesActuales = mensajesDAO.obtenerMensajesUsuario(usuarioId);
@@ -232,7 +232,7 @@ public class BandejaMensajes extends JFrame {
         };
     }
 
-    // ========== VENTANA PARA MOSTRAR MENSAJE COMPLETO ==========
+    // ---------- Ventana externa para mostrar el contenido entero del mensaje -----------
     
     class VentanaMensaje extends JFrame {
 

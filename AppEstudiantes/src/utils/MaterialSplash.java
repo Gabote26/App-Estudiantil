@@ -3,6 +3,7 @@ package utils;
 import javax.swing.*;
 import java.awt.*;
 
+//Manejar desvanecido de la ventana con cargador
 public class MaterialSplash extends JWindow {
 
 	private static final long serialVersionUID = 1L;
